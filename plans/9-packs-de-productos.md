@@ -41,7 +41,7 @@
 
 Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para que pase. Las tareas de frontend no tienen test automático: se verifican con `ng build` y comprobación en el navegador.
 
-- [ ] **1. Modelo de pack y validación**
+- [x] **1. Modelo de pack y validación**
   - Test: `packages/api/src/models/pack.model.test.ts`: `validatePackInput` exige nombre, precio mayor que 0 y al menos un hueco; cada hueco tiene una categoría válida; los platos bloqueados se limpian de duplicados.
   - Código: `packages/api/src/models/pack.model.ts` con las interfaces `Pack` y `PackSlot` y errores `InvalidPackError` y `PackNotFoundError` en `errors/DomainErrors.ts`.
 - [ ] **2. Repositorio de packs**

@@ -270,3 +270,21 @@ export class BillNotFoundError extends AppError {
     super('Bill not found')
   }
 }
+
+export class InvalidPackError extends AppError {
+  constructor(message?: string) {
+    super(message ?? 'Invalid pack')
+  }
+}
+
+export class PackNotFoundError extends AppError {
+  constructor() {
+    super('Pack not found')
+  }
+}
+
+export class InvalidPackSelectionError extends AppError {
+  constructor(message?: string) {
+    super(message ?? 'Invalid pack selection')
+  }
+}
