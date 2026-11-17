@@ -1,0 +1,111 @@
+<div class="fade-in">
+  <div class="page-header">
+    <h1>Puntos y descuentos</h1>
+  </div>
+
+  <p class="intro">
+    Define cuántos euros de descuento obtiene un cliente al canjear sus puntos, por ejemplo
+    10 puntos = 1 € o 100 puntos = 10 €.
+  </p>
+
+  @if (error()) {
+    <div class="alert-error" role="alert" id="form-error" tabindex="-1">{{ error() }}</div>
+  }
+
+  <form class="card reward-form" (ngSubmit)="onSubmit()" novalidate aria-labelledby="form-title">
+    <h2 id="form-title">{{ editingId ? 'Editar equivalencia' : 'Nueva equivalencia' }}</h2>
+
+    <div class="reward-fields">
+      <div class="form-group">
+        <label for="reward-points">Puntos <span aria-hidden="true">*</span></label>
+        <input
+          id="reward-points"
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.points"
+          name="points"
+          min="1"
+          step="1"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().points ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().points ? 'reward-points-error' : null"
+        />
+        @if (fieldErrors().points) {
+          <span class="field-error" id="reward-points-error">{{ fieldErrors().points }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="reward-discount">Descuento (€) <span aria-hidden="true">*</span></label>
+        <input
+          id="reward-discount"
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.discount"
+          name="discount"
+          min="0"
+          step="any"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().discount ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().discount ? 'reward-discount-error' : null"
+        />
+        @if (fieldErrors().discount) {
+          <span class="field-error" id="reward-discount-error">{{ fieldErrors().discount }}</span>
+        }
+      </div>
+
+      <div class="reward-actions">
+        @if (editingId) {
+          <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancelar</button>
+        }
+        <button type="submit" class="btn btn-primary" [disabled]="saving()" [attr.aria-busy]="saving()">
+          {{ saving() ? 'Guardando...' : (editingId ? 'Guardar cambios' : 'Añadir equivalencia') }}
+        </button>
+      </div>
+    </div>
+  </form>
+
+  @if (store.loading()) {
+    <div class="spinner" role="status" aria-label="Cargando equivalencias"></div>
+  } @else if (store.error()) {
+    <div class="alert-error" role="alert">{{ store.error() }}</div>
+  } @else if (store.rewards().length === 0) {
+    <div class="empty-state card">
+      <lucide-icon name="star" [size]="40" aria-hidden="true"></lucide-icon>
+      <p>Todavía no hay equivalencias para este restaurante</p>
+    </div>
+  } @else {
+    <div class="card table-container">
+      <table>
+        <caption class="sr-only">Equivalencias entre puntos y descuento</caption>
+        <thead>
+          <tr>
+            <th scope="col">Puntos</th>
+            <th scope="col">Descuento</th>
+            <th scope="col"><span class="sr-only">Acciones</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of store.rewards(); track r.id) {
+            <tr>
+              <td class="reward-points">{{ r.points }} puntos</td>
+              <td>{{ r.discount | number:'1.2-2' }} €</td>
+              <td>
+                <div class="actions">
+                  <button type="button" class="btn btn-secondary btn-sm" (click)="startEdit(r)" [attr.aria-label]="'Editar la equivalencia de ' + r.points + ' puntos'">
+                    <lucide-icon name="edit" [size]="14" aria-hidden="true"></lucide-icon>
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="onDelete(r)" [attr.aria-label]="'Eliminar la equivalencia de ' + r.points + ' puntos'">
+                    <lucide-icon name="trash-2" [size]="14" aria-hidden="true"></lucide-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
