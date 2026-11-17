@@ -60,7 +60,7 @@
     "type": "feature",
     "projects": ["api", "web-clientes", "web-admin"],
     "body": "Junto a entrantes, comidas, bebidas... ahora los administradores deben de poder crear un pack con un precio concreto y unos productos concretos a elegir. Por ejemplo, la idea es que se pueda crear un pack de entrante + principal + bebida por 20€. Luego el cliente, si selecciona uno de estos packs, tendrá que elegir qué entrante, qué principal y qué bebida pedir. El administrador también podría limitar los productos que se pueden elegir en estos packs, por ejemplo, bloquear la cerveza dentro de la selección de bebidas del pack.",
-    "corregido": "no"
+    "corregido": "si"
   },
   {
     "title": "Cada rol solo debe modificar el estado de sus items",

@@ -5,7 +5,7 @@
 - **Issue**: #9
 - **Título**: Packs de productos
 - **Fecha**: 2026-11-17
-- **Estado**: borrador
+- **Estado**: implementado
 - **Rama sugerida**: `feature/9-packs-de-productos`
 
 ## Objetivo y alcance
@@ -83,14 +83,14 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 
 ## Criterios de aceptación
 
-- [ ] El administrador (y el gerente) crea, edita, lista y borra packs con nombre, precio fijo y huecos por categoría, y puede bloquear platos concretos dentro de cada hueco.
-- [ ] El cliente ve los packs disponibles en la carta y, al elegir uno, tiene que escoger un plato por hueco sin poder elegir los bloqueados.
-- [ ] La API rechaza una elección incompleta, con un plato de otra categoría, bloqueado o no disponible.
-- [ ] El pedido con un pack genera un item por cada plato elegido, que cocina y barra gestionan igual que cualquier otro item.
-- [ ] El total del pedido cuenta el precio del pack una sola vez y los puntos se calculan con ese total.
-- [ ] El documento OpenAPI y el modelo de datos recogen los packs.
-- [ ] Todas las tareas están completadas
-- [ ] `npm test` pasa en verde
+- [x] El administrador (y el gerente) crea, edita, lista y borra packs con nombre, precio fijo y huecos por categoría, y puede bloquear platos concretos dentro de cada hueco.
+- [x] El cliente ve los packs disponibles en la carta y, al elegir uno, tiene que escoger un plato por hueco sin poder elegir los bloqueados.
+- [x] La API rechaza una elección incompleta, con un plato de otra categoría, bloqueado o no disponible.
+- [x] El pedido con un pack genera un item por cada plato elegido, que cocina y barra gestionan igual que cualquier otro item.
+- [x] El total del pedido cuenta el precio del pack una sola vez y los puntos se calculan con ese total.
+- [x] El documento OpenAPI y el modelo de datos recogen los packs.
+- [x] Todas las tareas están completadas
+- [x] `npm test` pasa en verde
 
 ## Dudas abiertas
 
@@ -104,3 +104,6 @@ Ninguna
 4. **Precio del pack guardado en el pedido**: `order_packs` guarda nombre y precio en el momento de pedir, para que editar el pack después no cambie pedidos pasados.
 5. **Quién gestiona packs**: `admin` y `manager`, igual que los platos. La lectura pública devuelve solo packs disponibles.
 6. **Cocina y barra no cambian**: los platos del pack son items normales y siguen su flujo y permisos por categoría.
+7. **Exclusiones sin clave foránea a los platos**: `pack_slot_exclusions.dish_id` no tiene `FOREIGN KEY`, para que un plato bloqueado inexistente no provoque un error 500 al guardar el pack y para que borrar un plato no falle por estar bloqueado en un pack. Una exclusión de un plato borrado es inofensiva.
+8. **Errores de pack al pedir**: `OrderController` no usa el manejador global de errores y devuelve 400 para cualquier error, de modo que un pack inexistente o una elección inválida al crear un pedido responden 400 (no 404), igual que el resto de errores de ese controller. Los endpoints de gestión de packs sí devuelven 404 cuando el pack no existe.
+9. **Pedidos, total y puntos**: `calculateOrderTotal` pasa a sumar el precio de cada pack una sola vez y excluye los platos de un pack, lo que también corrige el importe de los puntos y de la cuenta con descuentos.
