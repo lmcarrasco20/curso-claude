@@ -47,7 +47,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **2. Repositorio de packs**
   - Test: `packages/api/src/repositories/pack.repository.test.ts` (base en memoria): guardar un pack con huecos y platos bloqueados, buscarlo por id con sus huecos, listar por restaurante, actualizar sustituyendo huecos y eliminar en cascada.
   - Código: tablas `packs`, `pack_slots` y `pack_slot_exclusions` en `config/database.ts`, `repositories/pack.repository.ts` (`PackRepository` y `SqlitePackRepository`) y `mocks/MockPackRepository.ts`.
-- [ ] **3. Servicio de packs**
+- [x] **3. Servicio de packs**
   - Test: `packages/api/src/services/pack.service.test.ts` con mock: crear, listar, obtener (404), actualizar, eliminar y listar solo los disponibles de un restaurante.
   - Código: `packages/api/src/services/pack.service.ts`.
 - [ ] **4. Validar la elección del cliente**
