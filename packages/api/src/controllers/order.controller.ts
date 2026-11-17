@@ -73,10 +73,13 @@ export class OrderController {
             const itemId = req.params.itemId as string
             const { status } = req.body
 
-            await this.orderService.updateItemStatus(orderId, itemId, status)
+            const role = (req as any).user?.role
+            await this.orderService.updateItemStatus(orderId, itemId, status, role)
             res.status(204).send()
         } catch (error) {
-            if (error instanceof Error && (error.name === 'OrderNotFoundError' || error.name === 'InvalidOrderStatusError')) {
+            if (error instanceof Error && error.name === 'ForbiddenItemStatusUpdateError') {
+                res.status(403).json({ error: error.message })
+            } else if (error instanceof Error && (error.name === 'OrderNotFoundError' || error.name === 'InvalidOrderStatusError')) {
                 res.status(400).json({ error: error.message })
             } else {
                 res.status(500).json({ error: 'Internal Server Error' })

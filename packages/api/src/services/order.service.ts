@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto'
 import type { Order, OrderItem } from '@models/order.model.js'
-import { normalizeOrderStatus } from '@models/order.model.js'
+import { normalizeOrderStatus, canRoleUpdateItemStatus } from '@models/order.model.js'
 import type { OrderRepository } from '@repositories/order.repository.js'
-import { RestaurantIdRequiredError, OrderNotFoundError } from '@errors/DomainErrors.js'
+import { RestaurantIdRequiredError, OrderNotFoundError, ForbiddenItemStatusUpdateError } from '@errors/DomainErrors.js'
 
 export interface CreateOrderRequest {
     restaurantId: string
@@ -66,7 +66,7 @@ export class OrderService {
         return this.orderRepository.findByClientId(clientId)
     }
 
-    async updateItemStatus(orderId: string, itemId: string, status: string): Promise<void> {
+    async updateItemStatus(orderId: string, itemId: string, status: string, role?: string): Promise<void> {
         const order = await this.orderRepository.findById(orderId)
         if (!order) {
             throw new OrderNotFoundError()
@@ -78,6 +78,10 @@ export class OrderService {
         }
 
         const normalizedStatus = normalizeOrderStatus(status)
+        // Sin rol (uso interno) no se comprueban permisos; el controller siempre lo informa
+        if (role !== undefined && !canRoleUpdateItemStatus(role, item.dishCategory, normalizedStatus)) {
+            throw new ForbiddenItemStatusUpdateError()
+        }
         item.status = normalizedStatus
 
         await this.orderRepository.updateItemStatus(orderId, itemId, normalizedStatus)

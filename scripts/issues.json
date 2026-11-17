@@ -59,7 +59,8 @@
     "title": "Cada rol solo debe modificar el estado de sus items",
     "type": "bug",
     "projects": ["api"],
-    "body": "Un usuario con rol cocinero puede modificar el estado de una bebida, y un camarero puede modificar los estados de los platos. Cada rol solo debería de poder modificar el estado del item del pedido que le toca."
+    "body": "Un usuario con rol cocinero puede modificar el estado de una bebida, y un camarero puede modificar los estados de los platos. Cada rol solo debería de poder modificar el estado del item del pedido que le toca.",
+    "corregido": "si"
   },
   {
     "title": "Accesibilizar el formulario de platos",

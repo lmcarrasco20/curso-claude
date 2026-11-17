@@ -37,3 +37,24 @@ export function normalizeOrderStatus(value: string): OrderStatusType {
 export function isOrderFullyDelivered(order: Order): boolean {
     return order.items.length > 0 && order.items.every(item => item.status === 'entregado')
 }
+
+/**
+ * Indica si un rol puede cambiar un item a un estado concreto:
+ * - cocinero: platos (no bebidas) -> preparando / listo
+ * - camarero: bebidas (barra) -> cualquier estado; cualquier item -> entregado (salón)
+ * - manager y admin: todo
+ */
+export function canRoleUpdateItemStatus(role: string, dishCategory: string | undefined, status: OrderStatusType): boolean {
+    const isDrink = dishCategory?.toLowerCase() === 'bebida'
+    switch (role) {
+        case 'admin':
+        case 'manager':
+            return true
+        case 'cocinero':
+            return !isDrink && (status === 'preparando' || status === 'listo')
+        case 'camarero':
+            return isDrink || status === 'entregado'
+        default:
+            return false
+    }
+}

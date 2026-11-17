@@ -162,3 +162,9 @@ export class OrderNotFoundError extends AppError {
   }
 }
 
+
+export class ForbiddenItemStatusUpdateError extends AppError {
+  constructor() {
+    super('Tu rol no puede modificar el estado de este item')
+  }
+}
