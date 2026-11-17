@@ -37,4 +37,23 @@ describe('SqlitePointsRepository (Integration)', () => {
         expect(await repo.getBalance('c1', 'r1')).toBe(10)
         expect(await repo.getBalance('c2', 'r1')).toBe(0)
     })
+
+    it('el saldo descuenta los puntos canjeados', async () => {
+        const redemption = { id: 'r1', clientId: 'c3', restaurantId: 'r1', orderId: 'o10', points: 10, createdAt: new Date().toISOString() }
+        await repo.addEarned({ id: 'e1', clientId: 'c3', restaurantId: 'r1', orderId: 'o9', points: 25, createdAt: new Date().toISOString() })
+        expect(await repo.addRedeemed(redemption)).toBe(true)
+        expect(await repo.getBalance('c3', 'r1')).toBe(15)
+    })
+
+    it('no canjea dos veces el mismo pedido', async () => {
+        const redemption = { id: 'r2', clientId: 'c3', restaurantId: 'r1', orderId: 'o10', points: 5, createdAt: new Date().toISOString() }
+        expect(await repo.addRedeemed(redemption)).toBe(false)
+        expect(await repo.getBalance('c3', 'r1')).toBe(15)
+    })
+
+    it('no canjea más puntos de los que hay', async () => {
+        const redemption = { id: 'r3', clientId: 'c3', restaurantId: 'r1', orderId: 'o11', points: 16, createdAt: new Date().toISOString() }
+        expect(await repo.addRedeemed(redemption)).toBe(false)
+        expect(await repo.getBalance('c3', 'r1')).toBe(15)
+    })
 })

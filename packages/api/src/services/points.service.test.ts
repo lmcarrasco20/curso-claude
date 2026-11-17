@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { PointsService } from './points.service.js'
 import { MockPointsRepository } from '@repositories/mocks/MockPointsRepository.js'
 import type { Order } from '@models/order.model.js'
+import { InsufficientPointsError, InvalidPointsRewardError } from '@errors/DomainErrors.js'
 
 const deliveredOrder = (overrides: Partial<Order> = {}): Order => ({
     id: 'o1',
@@ -62,5 +63,35 @@ describe('PointsService', () => {
     it('el saldo es independiente por restaurante', async () => {
         await service.awardForOrder(deliveredOrder())
         expect(await service.getBalance('c1', 'r2')).toBe(0)
+    })
+
+    describe('redeem', () => {
+        beforeEach(async () => {
+            await service.awardForOrder(deliveredOrder()) // 35 € -> 3 puntos con la regla por defecto
+            await service.setRule('r1', 1, 1)
+            await service.awardForOrder(deliveredOrder({ id: 'o2' })) // 35 puntos más
+        })
+
+        it('descuenta los puntos canjeados del saldo', async () => {
+            expect(await service.getBalance('c1', 'r1')).toBe(38)
+            expect(await service.redeem('c1', 'r1', 'o-canje', 10)).toBe(true)
+            expect(await service.getBalance('c1', 'r1')).toBe(28)
+        })
+
+        it('falla si no hay puntos suficientes y no cambia el saldo', async () => {
+            await expect(service.redeem('c1', 'r1', 'o-canje', 39)).rejects.toThrow(InsufficientPointsError)
+            expect(await service.getBalance('c1', 'r1')).toBe(38)
+        })
+
+        it('no canjea dos veces el mismo pedido', async () => {
+            await service.redeem('c1', 'r1', 'o-canje', 10)
+            expect(await service.redeem('c1', 'r1', 'o-canje', 10)).toBe(false)
+            expect(await service.getBalance('c1', 'r1')).toBe(28)
+        })
+
+        it('rechaza canjear una cantidad que no sea un entero positivo', async () => {
+            await expect(service.redeem('c1', 'r1', 'o-canje', 0)).rejects.toThrow(InvalidPointsRewardError)
+            await expect(service.redeem('c1', 'r1', 'o-canje', 1.5)).rejects.toThrow(InvalidPointsRewardError)
+        })
     })
 })

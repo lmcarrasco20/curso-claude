@@ -18,6 +18,15 @@ export interface PointsTransaction {
     createdAt: string
 }
 
+export interface PointsRedemption {
+    id: string
+    clientId: string
+    restaurantId: string
+    orderId: string
+    points: number
+    createdAt: string
+}
+
 /** Regla que se aplica mientras el restaurante no configure la suya: 1 punto por cada 10 € */
 export const DEFAULT_POINTS_RULE = { eurosPerBlock: 10, pointsPerBlock: 1 } as const
 

@@ -1,5 +1,5 @@
 import { Database } from '@config/database.js'
-import type { PointsRule, PointsTransaction } from '@models/points.model.js'
+import type { PointsRedemption, PointsRule, PointsTransaction } from '@models/points.model.js'
 
 interface PointsRuleRow {
     restaurantId: string
@@ -7,11 +7,22 @@ interface PointsRuleRow {
     pointsPerBlock: number
 }
 
+const BALANCE_SQL = `(
+    COALESCE((SELECT SUM(points) FROM points_transactions WHERE client_id = ? AND restaurant_id = ?), 0) -
+    COALESCE((SELECT SUM(points) FROM points_redemptions WHERE client_id = ? AND restaurant_id = ?), 0)
+)`
+
 export interface PointsRepository {
     findRule(restaurantId: string): Promise<PointsRule | null>
     saveRule(rule: PointsRule): Promise<void>
     /** Registra los puntos ganados por un pedido. Devuelve false si ese pedido ya los había dado. */
     addEarned(transaction: PointsTransaction): Promise<boolean>
+    /**
+     * Registra un canje de puntos de forma atómica. Devuelve false si ese pedido ya canjeó puntos
+     * o si el saldo no alcanza (comprobación hecha en la misma sentencia SQL).
+     */
+    addRedeemed(redemption: PointsRedemption): Promise<boolean>
+    /** Saldo = puntos ganados - puntos canjeados */
     getBalance(clientId: string, restaurantId: string): Promise<number>
 }
 
@@ -43,11 +54,22 @@ export class SqlitePointsRepository implements PointsRepository {
         return result.changes > 0
     }
 
-    async getBalance(clientId: string, restaurantId: string): Promise<number> {
-        const row = await this.db.get<{ total: number | null }>(
-            'SELECT SUM(points) as total FROM points_transactions WHERE client_id = ? AND restaurant_id = ?',
-            [clientId, restaurantId]
+    async addRedeemed(redemption: PointsRedemption): Promise<boolean> {
+        const result = await this.db.run(
+            `INSERT OR IGNORE INTO points_redemptions (id, client_id, restaurant_id, order_id, points, created_at)
+             SELECT ?, ?, ?, ?, ?, ?
+             WHERE ${BALANCE_SQL} >= ?`,
+            [
+                redemption.id, redemption.clientId, redemption.restaurantId, redemption.orderId, redemption.points, redemption.createdAt,
+                redemption.clientId, redemption.restaurantId, redemption.clientId, redemption.restaurantId,
+                redemption.points
+            ]
         )
-        return row?.total ?? 0
+        return result.changes > 0
+    }
+
+    async getBalance(clientId: string, restaurantId: string): Promise<number> {
+        const row = await this.db.get<{ balance: number }>(`SELECT ${BALANCE_SQL} as balance`, [clientId, restaurantId, clientId, restaurantId])
+        return row?.balance ?? 0
     }
 }

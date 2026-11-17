@@ -246,3 +246,9 @@ export class DuplicatedPointsRewardError extends AppError {
     super('A reward for this amount of points already exists in the restaurant')
   }
 }
+
+export class InsufficientPointsError extends AppError {
+  constructor() {
+    super('Not enough points')
+  }
+}

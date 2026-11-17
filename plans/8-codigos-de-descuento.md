@@ -57,7 +57,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **5. Equivalencias puntos → descuento: servicio**
   - Test: `packages/api/src/services/points-reward.service.test.ts`: crear, rechazar puntos duplicados en el restaurante, listar ordenado por puntos, actualizar y eliminar.
   - Código: `packages/api/src/services/points-reward.service.ts`.
-- [ ] **6. Canje de puntos: saldo y registro**
+- [x] **6. Canje de puntos: saldo y registro**
   - Test: ampliar `points.service.test.ts` y `points.repository.test.ts`: el saldo es lo ganado menos lo canjeado; `redeem` descuenta puntos una sola vez por pedido y falla si no hay saldo suficiente (`InsufficientPointsError`).
   - Código: tabla `points_redemptions` (único por pedido), métodos `addRedeemed` y `getBalance` actualizado en `PointsRepository`/`SqlitePointsRepository`/mock y `redeem` en `PointsService`.
 - [ ] **7. Cálculo de la cuenta**

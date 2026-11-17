@@ -3,6 +3,7 @@ import type { PointsRepository } from '@repositories/points.repository.js'
 import type { Order } from '@models/order.model.js'
 import { isOrderFullyDelivered } from '@models/order.model.js'
 import type { PointsRule } from '@models/points.model.js'
+import { InsufficientPointsError, InvalidPointsRewardError } from '@errors/DomainErrors.js'
 import { DEFAULT_POINTS_RULE, calculateOrderTotal, calculatePoints, validatePointsRule } from '@models/points.model.js'
 
 export class PointsService {
@@ -40,6 +41,33 @@ export class PointsService {
             createdAt: new Date().toISOString()
         })
         return added ? points : 0
+    }
+
+    /**
+     * Canjea puntos del cliente por un pedido. Devuelve false si ese pedido ya había canjeado puntos.
+     * Lanza `InsufficientPointsError` si el saldo no alcanza.
+     */
+    async redeem(clientId: string, restaurantId: string, orderId: string, points: number): Promise<boolean> {
+        if (!Number.isInteger(points) || points <= 0) {
+            throw new InvalidPointsRewardError('Los puntos a canjear deben ser un número entero mayor que 0')
+        }
+        if ((await this.getBalance(clientId, restaurantId)) < points) {
+            throw new InsufficientPointsError()
+        }
+
+        const added = await this.pointsRepository.addRedeemed({
+            id: randomUUID(),
+            clientId,
+            restaurantId,
+            orderId,
+            points,
+            createdAt: new Date().toISOString()
+        })
+        if (!added && (await this.getBalance(clientId, restaurantId)) < points) {
+            // Otro canje se llevó el saldo entre la comprobación y el registro
+            throw new InsufficientPointsError()
+        }
+        return added
     }
 
     async getBalance(clientId: string, restaurantId: string): Promise<number> {
