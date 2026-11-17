@@ -42,7 +42,7 @@
 
 Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para que pase. Las tareas de frontend no tienen test automático: se verifican con `ng build` y comprobación en el navegador.
 
-- [ ] **1. Modelo de código de descuento**
+- [x] **1. Modelo de código de descuento**
   - Test: `packages/api/src/models/discount.model.test.ts`: `normalizeDiscountCode` pasa a mayúsculas, recorta y rechaza vacíos o con espacios; `validateDiscountInput` exige tipo `porcentaje` (1-100) o `importe` (mayor que 0); `calculateCodeDiscount` aplica porcentaje o importe fijo sin superar el total.
   - Código: `packages/api/src/models/discount.model.ts` y errores `InvalidDiscountError`, `DiscountCodeNotFoundError`, `DuplicatedDiscountCodeError`, `InvalidDiscountCodeError` en `errors/DomainErrors.ts`.
 - [ ] **2. Repositorio de códigos de descuento**

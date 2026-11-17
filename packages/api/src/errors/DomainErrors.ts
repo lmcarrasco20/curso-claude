@@ -204,3 +204,27 @@ export class TableNotAvailableError extends AppError {
     super('The table is not available')
   }
 }
+
+export class InvalidDiscountError extends AppError {
+  constructor(message?: string) {
+    super(message ?? 'Invalid discount')
+  }
+}
+
+export class DiscountCodeNotFoundError extends AppError {
+  constructor() {
+    super('Discount code not found')
+  }
+}
+
+export class DuplicatedDiscountCodeError extends AppError {
+  constructor() {
+    super('A discount code with this code already exists in the restaurant')
+  }
+}
+
+export class InvalidDiscountCodeError extends AppError {
+  constructor() {
+    super('The discount code is not valid')
+  }
+}
