@@ -48,7 +48,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **2. Repositorio de códigos de descuento**
   - Test: `packages/api/src/repositories/discount.repository.test.ts` (base en memoria): guardar, buscar por id y por código dentro del restaurante, listar, actualizar y eliminar; el código es único por restaurante.
   - Código: tabla `discount_codes` en `config/database.ts`, `repositories/discount.repository.ts` (`DiscountRepository` y `SqliteDiscountRepository`) y `mocks/MockDiscountRepository.ts`.
-- [ ] **3. Servicio de códigos de descuento**
+- [x] **3. Servicio de códigos de descuento**
   - Test: `packages/api/src/services/discount.service.test.ts` con mock: crear (código en mayúsculas, activo por defecto), rechazar código duplicado, listar, obtener (404), actualizar, eliminar y `findUsableByCode` (error si no existe o está inactivo).
   - Código: `packages/api/src/services/discount.service.ts`.
 - [ ] **4. Equivalencias puntos → descuento: modelo y repositorio**
