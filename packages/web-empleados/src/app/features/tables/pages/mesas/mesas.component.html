@@ -1,0 +1,69 @@
+<div class="page-header">
+  <h1>Mesas</h1>
+</div>
+
+@if (tableStore.loading() && tableStore.tables().length === 0) {
+  <div class="spinner" role="status" aria-label="Cargando mesas"></div>
+}
+
+@if (tableStore.error()) {
+  <div class="alert-error" role="alert">{{ tableStore.error() }}</div>
+}
+
+@if (!tableStore.loading() || tableStore.tables().length > 0) {
+  @if (tableStore.tables().length === 0) {
+    <div class="empty-state">
+      <p>Este restaurante todavía no tiene mesas</p>
+    </div>
+  } @else {
+    <div class="tables-grid">
+      @for (table of tableStore.tables(); track table.id) {
+        <section class="table-card" [class]="'table-card status-' + table.status" [attr.aria-labelledby]="'table-title-' + table.id">
+          <div class="table-header">
+            <h2 class="table-title" [id]="'table-title-' + table.id">Mesa {{ table.number }}</h2>
+            <span class="table-capacity">{{ table.capacity }} {{ table.capacity === 1 ? 'persona' : 'personas' }}</span>
+          </div>
+          @if (table.description) {
+            <p class="table-description">{{ table.description }}</p>
+          }
+
+          <div class="status-control">
+            <label [for]="'status-' + table.id">Estado de la mesa {{ table.number }}</label>
+            <select
+              [id]="'status-' + table.id"
+              class="status-select"
+              (change)="onStatusChange(table, $event)"
+            >
+              @for (s of statuses; track s.value) {
+                <option [value]="s.value" [selected]="s.value === table.status">{{ s.label }}</option>
+              }
+            </select>
+          </div>
+
+          @if (table.status === 'ocupada') {
+            <div class="table-orders">
+              <h3>Pedidos</h3>
+              @if (ordersOf(table).length === 0) {
+                <p class="no-orders">Sin pedidos activos</p>
+              } @else {
+                @for (order of ordersOf(table); track order.id) {
+                  <div class="table-order">
+                    <span class="order-id">Pedido #{{ order.id.substring(0, 8) }}</span>
+                    <ul class="order-items">
+                      @for (item of order.items; track item.id) {
+                        <li>
+                          <span>{{ item.dishName || 'Producto' }}</span>
+                          <span [class]="getItemStatusClass(item.status)">{{ item.status }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </section>
+      }
+    </div>
+  }
+}

@@ -74,7 +74,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **10. web-admin: formulario de mesa**
   - Test: sin test automático; `ng build` y prueba creando, editando y borrando una mesa.
   - Código: `pages/table-form/table-form.component.*` (número, descripción, capacidad y estado) con etiquetas asociadas, validación y errores accesibles, rutas `tables/new` y `tables/:id/edit`.
-- [ ] **11. web-empleados: página de mesas**
+- [x] **11. web-empleados: página de mesas**
   - Test: sin test automático; `ng build` y prueba con camarero y gerente.
   - Código: `features/tables/` (modelo, servicio, store con sondeo cada 30 s, como `OrderStore`) y `pages/mesas/mesas.component.*` con las mesas, un selector para cambiar su estado y, en las ocupadas, los pedidos activos con el estado de cada item; ruta `mesas` con `roleGuard(['camarero', 'manager'])` y enlace en el menú. Las pantallas de cocina, barra y salón pasan a mostrar `tableNumber`.
 - [ ] **12. web-clientes: elegir mesa antes de la carta**
