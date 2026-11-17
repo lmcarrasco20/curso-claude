@@ -72,7 +72,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **10. Seed, OpenAPI y modelo de datos**
   - Test: `packages/api/src/openapi.test.ts` actualizado con los endpoints nuevos (falla hasta documentarlos).
   - Código: códigos y equivalencias de ejemplo en `scripts/seed.ts`, endpoints y esquemas en `docs/api/openapi.json` y tablas en `docs/dominio/modelo-datos.md`.
-- [ ] **11. web-admin: códigos de descuento (servicio, store y listado)**
+- [x] **11. web-admin: códigos de descuento (servicio, store y listado)**
   - Test: sin test automático; `ng build` y comprobación en el navegador.
   - Código: `features/discounts/` en `packages/web-admin` con modelo, servicio, store y `pages/discount-list`, ruta y enlace "Descuentos" en el menú del restaurante.
 - [ ] **12. web-admin: formulario de código de descuento**

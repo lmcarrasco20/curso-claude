@@ -1,0 +1,63 @@
+<div class="fade-in">
+  <div class="page-header">
+    <h1>Códigos de descuento</h1>
+    <a [routerLink]="['new']" class="btn btn-primary">
+      <lucide-icon name="plus" [size]="16" aria-hidden="true"></lucide-icon>
+      Nuevo código
+    </a>
+  </div>
+
+  @if (store.loading()) {
+    <div class="spinner" role="status" aria-label="Cargando códigos de descuento"></div>
+  } @else if (store.error()) {
+    <div class="alert-error" role="alert">{{ store.error() }}</div>
+  } @else if (store.discounts().length === 0) {
+    <div class="empty-state card">
+      <lucide-icon name="tag" [size]="40" aria-hidden="true"></lucide-icon>
+      <p>No hay códigos de descuento para este restaurante</p>
+    </div>
+  } @else {
+    <div class="card table-container">
+      <table>
+        <caption class="sr-only">Códigos de descuento del restaurante</caption>
+        <thead>
+          <tr>
+            <th scope="col">Código</th>
+            <th scope="col">Descuento</th>
+            <th scope="col">Estado</th>
+            <th scope="col"><span class="sr-only">Acciones</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of store.discounts(); track d.id) {
+            <tr>
+              <td class="discount-code">{{ d.code }}</td>
+              <td>
+                @if (d.type === 'porcentaje') {
+                  {{ d.value | number:'1.0-2' }} %
+                } @else {
+                  {{ d.value | number:'1.2-2' }} €
+                }
+              </td>
+              <td>
+                <span class="status" [class.status-active]="d.active" [class.status-inactive]="!d.active">
+                  {{ d.active ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="actions">
+                  <a [routerLink]="[d.id, 'edit']" class="btn btn-secondary btn-sm" [attr.aria-label]="'Editar el código ' + d.code">
+                    <lucide-icon name="edit" [size]="14" aria-hidden="true"></lucide-icon>
+                  </a>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="onDelete(d)" [attr.aria-label]="'Eliminar el código ' + d.code">
+                    <lucide-icon name="trash-2" [size]="14" aria-hidden="true"></lucide-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
