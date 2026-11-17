@@ -31,6 +31,9 @@
       "name": "Mesas"
     },
     {
+      "name": "Packs"
+    },
+    {
       "name": "Pedidos"
     },
     {
@@ -2685,6 +2688,414 @@
         ]
       }
     },
+    "/restaurants/{restaurantId}/packs": {
+      "get": {
+        "tags": [
+          "Packs"
+        ],
+        "summary": "Listar los packs de un restaurante",
+        "description": "Incluye los packs no disponibles.\n\n**Roles permitidos:** admin, manager.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de packs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pack"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El rol del usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Packs"
+        ],
+        "summary": "Crear un pack",
+        "description": "Un pack tiene un precio cerrado y uno o más huecos. Cada hueco es una categoría de plato y puede bloquear platos concretos (`excludedDishIds`). Al pedirlo, el cliente elige un plato por hueco.\n\n**Roles permitidos:** admin, manager.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pack creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El rol del usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/restaurants/{restaurantId}/packs/{id}": {
+      "get": {
+        "tags": [
+          "Packs"
+        ],
+        "summary": "Obtener un pack",
+        "description": "**Roles permitidos:** admin, manager.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del pack",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pack",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pack"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pack no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El rol del usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Packs"
+        ],
+        "summary": "Actualizar un pack",
+        "description": "Sustituye todos los huecos del pack. Los pedidos ya hechos conservan el nombre y el precio con los que se pidieron.\n\n**Roles permitidos:** admin, manager.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del pack",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pack actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pack no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El rol del usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Packs"
+        ],
+        "summary": "Eliminar un pack",
+        "description": "**Roles permitidos:** admin, manager.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del pack",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Pack eliminado"
+          },
+          "404": {
+            "description": "Pack no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El rol del usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/public/restaurants/{restaurantId}/packs": {
+      "get": {
+        "tags": [
+          "Público"
+        ],
+        "summary": "Packs disponibles de un restaurante (público)",
+        "description": "Devuelve solo los packs disponibles, con sus huecos.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Packs disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pack"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
     "/restaurants/{restaurantId}/points-rule": {
       "get": {
         "tags": [
@@ -2984,7 +3395,7 @@
           "Pedidos"
         ],
         "summary": "Crear un pedido",
-        "description": "Cada unidad de un plato (`quantity: n`) se guarda como `n` items independientes de cantidad 1, cada uno con su propio estado. Si el usuario autenticado es un cliente, el pedido queda asociado a él.",
+        "description": "Cada unidad de un plato (`quantity: n`) se guarda como `n` items independientes de cantidad 1, cada uno con su propio estado. Si el usuario autenticado es un cliente, el pedido queda asociado a él. Además de platos sueltos (`items`) se pueden pedir packs (`packs`): cada pack pedido genera un item por cada plato elegido, y su precio cerrado se cuenta una vez en el total.",
         "requestBody": {
           "required": true,
           "content": {
@@ -3851,6 +4262,13 @@
           "status": {
             "$ref": "#/components/schemas/OrderStatus"
           },
+          "orderPackId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Pack al que pertenece el item, si se pidió dentro de un pack"
+          },
           "dishName": {
             "type": "string"
           },
@@ -3900,6 +4318,12 @@
               "$ref": "#/components/schemas/OrderItem"
             }
           },
+          "packs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderPack"
+            }
+          },
           "restaurantName": {
             "type": "string"
           },
@@ -3947,11 +4371,16 @@
                 "quantity"
               ]
             }
+          },
+          "packs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PackOrderRequest"
+            }
           }
         },
         "required": [
-          "restaurantId",
-          "items"
+          "restaurantId"
         ]
       },
       "TableStatus": {
@@ -4244,6 +4673,169 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "PackSlot": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/DishCategory"
+          },
+          "excludedDishIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Platos que no se pueden elegir en este hueco"
+          }
+        }
+      },
+      "Pack": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "restaurantId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price": {
+            "type": "number",
+            "description": "Precio cerrado del pack"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "slots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PackSlot"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PackInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "available": {
+            "type": "boolean",
+            "default": true
+          },
+          "slots": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "$ref": "#/components/schemas/DishCategory"
+                },
+                "excludedDishIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "category"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "slots"
+        ]
+      },
+      "PackSelection": {
+        "type": "object",
+        "properties": {
+          "slotId": {
+            "type": "string"
+          },
+          "dishId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slotId",
+          "dishId"
+        ]
+      },
+      "PackOrderRequest": {
+        "type": "object",
+        "properties": {
+          "packId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "selections": {
+            "type": "array",
+            "description": "Un plato por cada hueco del pack",
+            "items": {
+              "$ref": "#/components/schemas/PackSelection"
+            }
+          }
+        },
+        "required": [
+          "packId",
+          "selections"
+        ]
+      },
+      "OrderPack": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "packId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
           }
         }
       },

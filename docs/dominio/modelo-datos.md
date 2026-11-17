@@ -13,6 +13,9 @@ erDiagram
     restaurants ||--o{ dishes : "tiene"
     restaurants ||--o{ orders : "tiene"
     restaurants ||--o{ restaurant_tables : "tiene"
+    restaurants ||--o{ packs : "tiene"
+    packs ||--|{ pack_slots : "se compone de"
+    orders ||--o{ order_packs : "incluye"
     restaurants ||--o{ discount_codes : "tiene"
     restaurants ||--o{ points_rewards : "tiene"
     orders ||--o| bills : "genera"
@@ -329,6 +332,64 @@ El código se aplica primero y el canje de puntos después, sobre el importe res
 
 ---
 
+## packs
+
+Packs de productos con precio cerrado, compuestos por huecos de categoría.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `restaurant_id` | TEXT | No | FK a `restaurants.id` (ON DELETE CASCADE) |
+| `name` | TEXT | No | Nombre del pack |
+| `description` | TEXT | Sí | Descripción |
+| `price` | REAL | No | Precio cerrado del pack |
+| `available` | INTEGER | No | 1 = se puede pedir, 0 = oculto |
+| `created_at` | TEXT | No | Fecha ISO 8601 |
+| `updated_at` | TEXT | No | Fecha ISO 8601 |
+
+## pack_slots
+
+Huecos de un pack. El cliente elige un plato de la categoría del hueco.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `pack_id` | TEXT | No | FK a `packs.id` (ON DELETE CASCADE) |
+| `position` | INTEGER | No | Orden del hueco dentro del pack |
+| `category` | TEXT | No | Categoría de plato: entrante, principal, postre, bebida |
+
+## pack_slot_exclusions
+
+Platos bloqueados en un hueco (por ejemplo, la cerveza dentro de las bebidas de un pack). El resto de platos de la categoría se pueden elegir.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `slot_id` | TEXT | No | FK a `pack_slots.id` (ON DELETE CASCADE) |
+| `dish_id` | TEXT | No | Plato bloqueado. PK(`slot_id`, `dish_id`). Sin clave foránea: un plato borrado deja una exclusión inofensiva |
+
+## order_packs
+
+Packs pedidos en un pedido. Guarda el nombre y el precio del momento, de modo que editar o borrar el pack después no cambia pedidos pasados.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `order_id` | TEXT | No | FK a `orders.id` (ON DELETE CASCADE) |
+| `pack_id` | TEXT | No | Pack pedido (sin clave foránea, para conservar el historial) |
+| `name` | TEXT | No | Nombre del pack al pedirlo |
+| `price` | REAL | No | Precio del pack al pedirlo |
+
+## order_pack_items
+
+Vincula los items de un pedido con el pack al que pertenecen. Los items de un pack son items normales (con su estado) que cocina y barra gestionan igual que el resto; la diferencia es que no suman su propio precio al total.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `order_item_id` | TEXT | No | PK, FK a `order_items.id` (ON DELETE CASCADE) |
+| `order_pack_id` | TEXT | No | FK a `order_packs.id` (ON DELETE CASCADE) |
+
+---
+
 ## Relaciones
 
 | Relación | Tipo | Descripción |
@@ -346,6 +407,10 @@ El código se aplica primero y el canje de puntos después, sobre el importe res
 | Restaurant → DiscountCodes | 1:N | Un restaurante tiene muchos códigos de descuento |
 | Restaurant → PointsRewards | 1:N | Un restaurante tiene varias equivalencias de puntos |
 | Order → Bill | 1:1 | Un pedido tiene como mucho una cuenta |
+| Restaurant → Packs | 1:N | Un restaurante tiene muchos packs |
+| Pack → PackSlots | 1:N | Un pack tiene uno o más huecos |
+| Order → OrderPacks | 1:N | Un pedido puede incluir varios packs |
+| OrderPack → OrderItems | 1:N | Un pack pedido genera un item por cada plato elegido |
 
 ---
 

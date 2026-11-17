@@ -65,7 +65,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **8. Controllers, rutas y errores**
   - Test: ampliar `errorHandler.test.ts` con los códigos HTTP de los errores nuevos y verificar el flujo con la API en marcha (crear pack, listarlo público, pedirlo).
   - Código: `controllers/pack.controller.ts` y `routes/pack.routes.ts` (CRUD `admin` y `manager`), listado público en `/public/restaurants/:restaurantId/packs`, cuerpo del pedido con `packs` en `OrderController`, cableado en `app.ts` y `order.routes.ts`.
-- [ ] **9. Seed, OpenAPI y modelo de datos**
+- [x] **9. Seed, OpenAPI y modelo de datos**
   - Test: `packages/api/src/openapi.test.ts` actualizado con los endpoints nuevos (falla hasta documentarlos).
   - Código: un pack de ejemplo por restaurante en `scripts/seed.ts` (con una bebida bloqueada), endpoints y esquemas en `docs/api/openapi.json` y tablas en `docs/dominio/modelo-datos.md`.
 - [ ] **10. web-admin: servicio, store y listado de packs**

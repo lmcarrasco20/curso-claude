@@ -242,6 +242,33 @@ const seed = async () => {
 
         console.log('Sample orders created')
 
+        const dishIdOf = async (name: string, restaurantId: string) =>
+            (await dbConfig.get<{ id: string }>('SELECT id FROM dishes WHERE name = ? AND restaurant_id = ?', [name, restaurantId]))?.id
+
+        const gourmetPackId = randomUUID()
+        await dbConfig.run(`
+            INSERT INTO packs (id, restaurant_id, name, description, price, available, created_at, updated_at)
+            VALUES (?, 'rest-1', 'Menú Gourmet', 'Un entrante, un principal y una bebida', 20, 1, ?, ?)
+        `, [gourmetPackId, new Date().toISOString(), new Date().toISOString()])
+        const gourmetSlots = [['entrante', null], ['principal', null], ['bebida', await dishIdOf('Refresco de Cola', 'rest-1')]] as const
+        for (const [position, [category, excludedDishId]] of gourmetSlots.entries()) {
+            const slotId = randomUUID()
+            await dbConfig.run('INSERT INTO pack_slots (id, pack_id, position, category) VALUES (?, ?, ?, ?)', [slotId, gourmetPackId, position, category])
+            if (excludedDishId) {
+                await dbConfig.run('INSERT INTO pack_slot_exclusions (slot_id, dish_id) VALUES (?, ?)', [slotId, excludedDishId])
+            }
+        }
+
+        const napoliPackId = randomUUID()
+        await dbConfig.run(`
+            INSERT INTO packs (id, restaurant_id, name, description, price, available, created_at, updated_at)
+            VALUES (?, 'rest-2', 'Menú Napoli', 'Una pizza y una bebida', 16, 1, ?, ?)
+        `, [napoliPackId, new Date().toISOString(), new Date().toISOString()])
+        for (const [position, category] of ['principal', 'bebida'].entries()) {
+            await dbConfig.run('INSERT INTO pack_slots (id, pack_id, position, category) VALUES (?, ?, ?, ?)', [randomUUID(), napoliPackId, position, category])
+        }
+        console.log('Packs created')
+
         console.log('\n=== Seed completado ===')
         console.log('\nEmpleados:')
         console.log('  Admin: admin@resttek.com / admin@resttek.com')

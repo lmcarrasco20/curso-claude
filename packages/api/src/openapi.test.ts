@@ -46,6 +46,12 @@ const ENDPOINTS: [string, string][] = [
     ['delete', '/restaurants/{restaurantId}/points-rewards/{id}'],
     ['post', '/orders/{id}/bill'],
     ['get', '/orders/{id}/bill'],
+    ['get', '/restaurants/{restaurantId}/packs'],
+    ['post', '/restaurants/{restaurantId}/packs'],
+    ['get', '/restaurants/{restaurantId}/packs/{id}'],
+    ['put', '/restaurants/{restaurantId}/packs/{id}'],
+    ['delete', '/restaurants/{restaurantId}/packs/{id}'],
+    ['get', '/public/restaurants/{restaurantId}/packs'],
     ['get', '/restaurants/{restaurantId}/points-rule'],
     ['put', '/restaurants/{restaurantId}/points-rule'],
     ['get', '/points/mine'],
@@ -114,5 +120,11 @@ describe('Documento OpenAPI', () => {
                 for (const n of names) expect(declared, `${method} ${route} {${n}}`).toContain(n)
             }
         }
+    })
+
+    it('el pedido admite packs y sus items indican a qué pack pertenecen', () => {
+        expect(spec.components.schemas.CreateOrder.properties.packs).toBeDefined()
+        expect(spec.components.schemas.Order.properties.packs).toBeDefined()
+        expect(spec.components.schemas.OrderItem.properties.orderPackId).toBeDefined()
     })
 })
