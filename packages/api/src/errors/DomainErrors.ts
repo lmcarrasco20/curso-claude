@@ -228,3 +228,21 @@ export class InvalidDiscountCodeError extends AppError {
     super('The discount code is not valid')
   }
 }
+
+export class InvalidPointsRewardError extends AppError {
+  constructor(message?: string) {
+    super(message ?? 'Invalid points reward')
+  }
+}
+
+export class PointsRewardNotFoundError extends AppError {
+  constructor() {
+    super('Points reward not found')
+  }
+}
+
+export class DuplicatedPointsRewardError extends AppError {
+  constructor() {
+    super('A reward for this amount of points already exists in the restaurant')
+  }
+}

@@ -51,7 +51,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **3. Servicio de códigos de descuento**
   - Test: `packages/api/src/services/discount.service.test.ts` con mock: crear (código en mayúsculas, activo por defecto), rechazar código duplicado, listar, obtener (404), actualizar, eliminar y `findUsableByCode` (error si no existe o está inactivo).
   - Código: `packages/api/src/services/discount.service.ts`.
-- [ ] **4. Equivalencias puntos → descuento: modelo y repositorio**
+- [x] **4. Equivalencias puntos → descuento: modelo y repositorio**
   - Test: `packages/api/src/models/points-redemption.model.test.ts` (validación: puntos enteros positivos, descuento mayor que 0) y `packages/api/src/repositories/points-redemption.repository.test.ts` (CRUD y puntos únicos por restaurante).
   - Código: `models/points-redemption.model.ts`, tabla `points_rewards` (id, restaurante, puntos, descuento en euros), `repositories/points-redemption.repository.ts` y su mock.
 - [ ] **5. Equivalencias puntos → descuento: servicio**
