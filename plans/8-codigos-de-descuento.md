@@ -45,7 +45,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **1. Modelo de código de descuento**
   - Test: `packages/api/src/models/discount.model.test.ts`: `normalizeDiscountCode` pasa a mayúsculas, recorta y rechaza vacíos o con espacios; `validateDiscountInput` exige tipo `porcentaje` (1-100) o `importe` (mayor que 0); `calculateCodeDiscount` aplica porcentaje o importe fijo sin superar el total.
   - Código: `packages/api/src/models/discount.model.ts` y errores `InvalidDiscountError`, `DiscountCodeNotFoundError`, `DuplicatedDiscountCodeError`, `InvalidDiscountCodeError` en `errors/DomainErrors.ts`.
-- [ ] **2. Repositorio de códigos de descuento**
+- [x] **2. Repositorio de códigos de descuento**
   - Test: `packages/api/src/repositories/discount.repository.test.ts` (base en memoria): guardar, buscar por id y por código dentro del restaurante, listar, actualizar y eliminar; el código es único por restaurante.
   - Código: tabla `discount_codes` en `config/database.ts`, `repositories/discount.repository.ts` (`DiscountRepository` y `SqliteDiscountRepository`) y `mocks/MockDiscountRepository.ts`.
 - [ ] **3. Servicio de códigos de descuento**
