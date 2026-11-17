@@ -1,0 +1,86 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div class="header-back">
+      <a [routerLink]="listUrl" class="back-link" aria-label="Volver al listado de códigos de descuento">
+        <lucide-icon name="chevron-left" [size]="18" aria-hidden="true"></lucide-icon>
+      </a>
+      <h1 class="page-title" id="page-title">{{ pageTitle }}</h1>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error" role="alert" id="form-error" tabindex="-1">{{ error() }}</div>
+  }
+
+  <form class="card form-card" (ngSubmit)="onSubmit()" novalidate aria-labelledby="page-title">
+    <p class="required-hint">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="discount-code">Código <span aria-hidden="true">*</span></label>
+        <input
+          id="discount-code"
+          type="text"
+          class="form-control code-input"
+          [(ngModel)]="form.code"
+          name="code"
+          placeholder="VERANO10"
+          autocomplete="off"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().code ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().code ? 'discount-code-error' : 'discount-code-hint'"
+        />
+        @if (fieldErrors().code) {
+          <span class="field-error" id="discount-code-error">{{ fieldErrors().code }}</span>
+        } @else {
+          <span class="field-hint" id="discount-code-hint">Se guarda en mayúsculas, sin espacios.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="discount-type">Tipo de descuento</label>
+        <select id="discount-type" class="form-control" [(ngModel)]="form.type" name="type">
+          @for (t of types; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="discount-value">{{ form.type === 'porcentaje' ? 'Porcentaje' : 'Importe (€)' }} <span aria-hidden="true">*</span></label>
+        <input
+          id="discount-value"
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.value"
+          name="value"
+          min="0"
+          step="any"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().value ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().value ? 'discount-value-error' : null"
+        />
+        @if (fieldErrors().value) {
+          <span class="field-error" id="discount-value-error">{{ fieldErrors().value }}</span>
+        }
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label" for="discount-active">
+          <input id="discount-active" type="checkbox" [(ngModel)]="form.active" name="active" />
+          Código activo
+        </label>
+        <span class="field-hint">Un código inactivo no se puede aplicar.</span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a class="btn btn-secondary" [routerLink]="listUrl">Cancelar</a>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()" [attr.aria-busy]="loading()">
+        {{ loading() ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</div>

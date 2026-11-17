@@ -75,7 +75,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **11. web-admin: códigos de descuento (servicio, store y listado)**
   - Test: sin test automático; `ng build` y comprobación en el navegador.
   - Código: `features/discounts/` en `packages/web-admin` con modelo, servicio, store y `pages/discount-list`, ruta y enlace "Descuentos" en el menú del restaurante.
-- [ ] **12. web-admin: formulario de código de descuento**
+- [x] **12. web-admin: formulario de código de descuento**
   - Test: sin test automático; `ng build` y prueba de crear, editar y borrar.
   - Código: `pages/discount-form` con etiquetas asociadas, validación y errores accesibles; rutas `new` y `:id/edit`.
 - [ ] **13. web-admin: equivalencias de puntos**
