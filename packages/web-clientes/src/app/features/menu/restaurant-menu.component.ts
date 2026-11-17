@@ -3,6 +3,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { DecimalPipe } from '@angular/common'
 import { LucideAngularModule } from 'lucide-angular'
 import { DishService } from '../../core/services/dish.service'
+import { PackService } from '../../core/services/pack.service'
+import { Pack, SLOT_CATEGORY_LABELS } from '../../core/models/pack.model'
 import { RestaurantService } from '../../core/services/restaurant.service'
 import { CartStore, Dish } from '../../core/store/cart.store'
 import { Restaurant } from '../../core/models/restaurant.model'
@@ -30,6 +32,26 @@ import { Restaurant } from '../../core/models/restaurant.model'
       } @else {
         <div class="menu-layout">
           <div class="menu-content">
+            @if (packs().length > 0) {
+              <div class="category-section">
+                <h2 class="category-title">Packs</h2>
+                <div class="dishes-grid">
+                  @for (pack of packs(); track pack.id) {
+                    <div class="dish-card card">
+                      <div class="dish-info">
+                        <h3>{{ pack.name }}</h3>
+                        @if (pack.description) {
+                          <p class="dish-description">{{ pack.description }}</p>
+                        }
+                        <p class="pack-composition">{{ packComposition(pack) }}</p>
+                        <p class="dish-price">{{ pack.price | number:'1.2-2' }} €</p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
             @for (category of categories(); track category) {
               <div class="category-section">
                 <h2 class="category-title">{{ category }}</h2>
@@ -94,6 +116,11 @@ import { Restaurant } from '../../core/models/restaurant.model'
     .table-info {
       color: var(--text-secondary);
       font-size: 14px;
+    }
+    .pack-composition {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 6px;
     }
     .back-link {
       font-size: 13px;
@@ -219,6 +246,7 @@ export class RestaurantMenuComponent implements OnInit {
   private readonly router = inject(Router)
   private readonly dishService = inject(DishService)
   private readonly restaurantService = inject(RestaurantService)
+  private readonly packService = inject(PackService)
   readonly cartStore = inject(CartStore)
 
   readonly restaurant = signal<Restaurant | null>(null)
@@ -250,9 +278,19 @@ export class RestaurantMenuComponent implements OnInit {
     this.loadData(restaurantId)
   }
 
+  readonly packs = signal<Pack[]>([])
+
+  packComposition(pack: Pack): string {
+    return pack.slots.map(slot => SLOT_CATEGORY_LABELS[slot.category] ?? slot.category).join(' + ')
+  }
+
   private loadData(restaurantId: string): void {
     this.restaurantService.getById(restaurantId).subscribe({
       next: (restaurant) => this.restaurant.set(restaurant),
+      error: () => {}
+    })
+    this.packService.getByRestaurant(restaurantId).subscribe({
+      next: (packs) => this.packs.set(packs),
       error: () => {}
     })
     this.dishService.getByRestaurant(restaurantId).subscribe({
