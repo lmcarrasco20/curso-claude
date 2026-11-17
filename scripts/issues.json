@@ -31,7 +31,8 @@
     "title": "Gestión de mesas",
     "type": "feature",
     "projects": ["web-admin", "web-empleados", "web-clientes", "api"],
-    "body": "Cuando entra un cliente en la app, al elegir el restaurante, primero tendrá que indicar el número de personas, se le deben mostrar las mesas disponibles en las que pueden sentarse según la cantidad de personas y una vez que la elige, y le da a continuar, entonces ya se pone como ocupada y va a la página de la carta para enviar su pedido a cocina y barra.\n\nEl administrador debe de poder gestionar las mesas del restaurante (CRUD). Deben de tener un id, numero, descripcion, capacidad y estado (libre, ocupada, reservada).\n\nLos empleados pueden ver los estados de las mesas y cambiarlos. Además, pueden ver el estado de los pedidos de las mesas ocupadas."
+    "body": "Cuando entra un cliente en la app, al elegir el restaurante, primero tendrá que indicar el número de personas, se le deben mostrar las mesas disponibles en las que pueden sentarse según la cantidad de personas y una vez que la elige, y le da a continuar, entonces ya se pone como ocupada y va a la página de la carta para enviar su pedido a cocina y barra.\n\nEl administrador debe de poder gestionar las mesas del restaurante (CRUD). Deben de tener un id, numero, descripcion, capacidad y estado (libre, ocupada, reservada).\n\nLos empleados pueden ver los estados de las mesas y cambiarlos. Además, pueden ver el estado de los pedidos de las mesas ocupadas.",
+    "corregido": "no"
   },
   {
     "title": "Generar documentación con OpenAPI",
@@ -51,13 +52,15 @@
     "title": "Códigos de descuentos",
     "type": "feature",
     "projects": ["api", "web-clientes", "web-admin"],
-    "body": "CRUD para que un admin de un restaurante pueda generar códigos de descuentos que van a poder aplicar los clientes.\n\nLos clientes deberán poder añadir un código de descuento al pedir la cuenta.\n\nLos clientes que tengan puntos, podrán usarlos como descuentos al pedir la cuenta, el administrador es el que podrá crear la relación entre los puntos y el descuento (10 puntos = 1€ de descuento, 100 puntos = 10€ de descuento...)."
+    "body": "CRUD para que un admin de un restaurante pueda generar códigos de descuentos que van a poder aplicar los clientes.\n\nLos clientes deberán poder añadir un código de descuento al pedir la cuenta.\n\nLos clientes que tengan puntos, podrán usarlos como descuentos al pedir la cuenta, el administrador es el que podrá crear la relación entre los puntos y el descuento (10 puntos = 1€ de descuento, 100 puntos = 10€ de descuento...).",
+    "corregido": "no"
   },
   {
     "title": "Packs de productos",
     "type": "feature",
     "projects": ["api", "web-clientes", "web-admin"],
-    "body": "Junto a entrantes, comidas, bebidas... ahora los administradores deben de poder crear un pack con un precio concreto y unos productos concretos a elegir. Por ejemplo, la idea es que se pueda crear un pack de entrante + principal + bebida por 20€. Luego el cliente, si selecciona uno de estos packs, tendrá que elegir qué entrante, qué principal y qué bebida pedir. El administrador también podría limitar los productos que se pueden elegir en estos packs, por ejemplo, bloquear la cerveza dentro de la selección de bebidas del pack."
+    "body": "Junto a entrantes, comidas, bebidas... ahora los administradores deben de poder crear un pack con un precio concreto y unos productos concretos a elegir. Por ejemplo, la idea es que se pueda crear un pack de entrante + principal + bebida por 20€. Luego el cliente, si selecciona uno de estos packs, tendrá que elegir qué entrante, qué principal y qué bebida pedir. El administrador también podría limitar los productos que se pueden elegir en estos packs, por ejemplo, bloquear la cerveza dentro de la selección de bebidas del pack.",
+    "corregido": "no"
   },
   {
     "title": "Cada rol solo debe modificar el estado de sus items",
