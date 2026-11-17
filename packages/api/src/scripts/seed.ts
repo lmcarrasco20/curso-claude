@@ -25,6 +25,21 @@ const seed = async () => {
 
         console.log('Restaurants created.')
 
+        const tablesByRestaurant = [
+            { restaurantId: 'rest-1', tables: [[1, 'Ventana', 2], [2, 'Ventana', 2], [3, 'Salón', 4], [4, 'Salón', 4], [5, 'Terraza', 6]] },
+            { restaurantId: 'rest-2', tables: [[1, 'Barra', 2], [2, 'Salón', 4], [3, 'Salón', 4], [4, 'Terraza', 8]] }
+        ] as const
+
+        for (const { restaurantId, tables } of tablesByRestaurant) {
+            for (const [number, description, capacity] of tables) {
+                await dbConfig.run(`
+                    INSERT INTO restaurant_tables (id, restaurant_id, number, description, capacity, status, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, 'libre', ?, ?)
+                `, [randomUUID(), restaurantId, number, description, capacity, new Date().toISOString(), new Date().toISOString()])
+            }
+        }
+        console.log('Tables created.')
+
         const authService = new BcryptAuthService()
         const employeeRepo = new SqliteEmployeeRepository(dbConfig)
 

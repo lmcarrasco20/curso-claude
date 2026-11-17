@@ -12,6 +12,8 @@ erDiagram
     restaurants ||--o{ ingredients : "tiene"
     restaurants ||--o{ dishes : "tiene"
     restaurants ||--o{ orders : "tiene"
+    restaurants ||--o{ restaurant_tables : "tiene"
+    restaurant_tables ||--o{ orders : "atiende"
     dishes ||--o{ dish_ingredients : "contiene"
     ingredients ||--o{ dish_ingredients : "usado en"
     orders ||--o{ order_items : "contiene"
@@ -215,6 +217,25 @@ Líneas de pedido. Cada ítem es un plato con cantidad y estado.
 
 ---
 
+## restaurant_tables
+
+Mesas de un restaurante.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `restaurant_id` | TEXT | No | FK a `restaurants.id` (ON DELETE CASCADE) |
+| `number` | INTEGER | No | Número de mesa. `UNIQUE(restaurant_id, number)` |
+| `description` | TEXT | Sí | Ubicación o descripción (terraza, ventana...) |
+| `capacity` | INTEGER | No | Comensales que caben |
+| `status` | TEXT | No | Estado: libre, ocupada, reservada |
+| `created_at` | TEXT | No | Fecha ISO 8601 |
+| `updated_at` | TEXT | No | Fecha ISO 8601 |
+
+`orders.table_id` guarda el `id` de la mesa del pedido (sin clave foránea, ya que un pedido puede no tener mesa). El número de mesa se obtiene con un `LEFT JOIN` al leer los pedidos.
+
+---
+
 ## points_rules
 
 Regla de puntos de un restaurante: por cada `euros_per_block` € gastados el cliente gana `points_per_block` puntos. Si un restaurante no tiene fila se aplica la regla por defecto (1 punto por cada 10 €).
@@ -250,6 +271,8 @@ Los puntos se conceden cuando todos los ítems del pedido quedan en estado `entr
 | Restaurant → Ingredients | 1:N | Un restaurante tiene muchos ingredientes |
 | Restaurant → Dishes | 1:N | Un restaurante tiene muchos platos |
 | Restaurant → Orders | 1:N | Un restaurante tiene muchos pedidos |
+| Restaurant → Tables | 1:N | Un restaurante tiene muchas mesas |
+| Table → Orders | 1:N | Una mesa puede tener varios pedidos (`orders.table_id`, opcional) |
 | Dish ↔ Ingredient | N:M | Un plato usa varios ingredientes (via `dish_ingredients`) |
 | Order → OrderItems | 1:N | Un pedido tiene varios ítems |
 | Dish → OrderItems | 1:N | Un plato puede estar en varios ítems de pedido |

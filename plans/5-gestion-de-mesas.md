@@ -62,7 +62,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **6. Número de mesa en los pedidos**
   - Test: ampliar `packages/api/src/repositories/order.repository.test.ts` (o crearlo con base en memoria): un pedido con `tableId` devuelve `tableNumber` al consultarlo por id, por pedidos activos y por cliente.
   - Código: `LEFT JOIN restaurant_tables` en `SqliteOrderRepository` y campo opcional `tableNumber` en `Order`.
-- [ ] **7. Seed, OpenAPI y modelo de datos**
+- [x] **7. Seed, OpenAPI y modelo de datos**
   - Test: `packages/api/src/openapi.test.ts` actualizado con los nuevos endpoints (falla hasta documentarlos).
   - Código: mesas de ejemplo en `scripts/seed.ts` para `rest-1` y `rest-2`; endpoints y esquemas en `docs/api/openapi.json`; tabla `restaurant_tables` en `docs/dominio/modelo-datos.md`.
 - [ ] **8. web-admin: servicio y store de mesas**

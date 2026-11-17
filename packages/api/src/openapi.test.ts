@@ -27,6 +27,14 @@ const ENDPOINTS: [string, string][] = [
     ['get', '/restaurants/{restaurantId}/dishes/{id}'],
     ['put', '/restaurants/{restaurantId}/dishes/{id}'],
     ['delete', '/restaurants/{restaurantId}/dishes/{id}'],
+    ['get', '/restaurants/{restaurantId}/tables'],
+    ['post', '/restaurants/{restaurantId}/tables'],
+    ['get', '/restaurants/{restaurantId}/tables/{id}'],
+    ['put', '/restaurants/{restaurantId}/tables/{id}'],
+    ['delete', '/restaurants/{restaurantId}/tables/{id}'],
+    ['patch', '/restaurants/{restaurantId}/tables/{id}/status'],
+    ['post', '/restaurants/{restaurantId}/tables/{id}/occupy'],
+    ['get', '/public/restaurants/{restaurantId}/tables'],
     ['get', '/restaurants/{restaurantId}/points-rule'],
     ['put', '/restaurants/{restaurantId}/points-rule'],
     ['get', '/points/mine'],
@@ -70,10 +78,10 @@ describe('Documento OpenAPI', () => {
     })
 
     it('las operaciones protegidas declaran seguridad y las públicas la desactivan', () => {
-        const publicOps = ['/auth/login', '/auth/register', '/public/restaurants', '/public/restaurants/{id}', '/public/restaurants/{restaurantId}/dishes']
+        const publicOps = (route: string) => route === '/auth/login' || route === '/auth/register' || route.startsWith('/public/')
         for (const [route, ops] of Object.entries<any>(spec.paths)) {
             for (const op of Object.values<any>(ops)) {
-                if (publicOps.includes(route)) expect(op.security, route).toEqual([])
+                if (publicOps(route)) expect(op.security, route).toEqual([])
                 else expect(op.security ?? spec.security, route).toEqual([{ bearerAuth: [] }])
             }
         }
