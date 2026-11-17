@@ -174,3 +174,33 @@ export class InvalidPointsRuleError extends AppError {
     super(message ?? 'Invalid points rule')
   }
 }
+
+export class InvalidTableError extends AppError {
+  constructor(message?: string) {
+    super(message ?? 'Invalid table')
+  }
+}
+
+export class InvalidTableStatusError extends AppError {
+  constructor(message?: string) {
+    super(message ?? 'Invalid table status')
+  }
+}
+
+export class TableNotFoundError extends AppError {
+  constructor() {
+    super('Table not found')
+  }
+}
+
+export class DuplicatedTableNumberError extends AppError {
+  constructor() {
+    super('A table with this number already exists in the restaurant')
+  }
+}
+
+export class TableNotAvailableError extends AppError {
+  constructor() {
+    super('The table is not available')
+  }
+}

@@ -44,7 +44,7 @@
 
 Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para que pase. Las tareas de frontend no tienen test automático: se verifican con `ng build` y se indica en cada una.
 
-- [ ] **1. Modelo de mesa y validaciones**
+- [x] **1. Modelo de mesa y validaciones**
   - Test: `packages/api/src/models/table.model.test.ts`: `normalizeTableStatus` acepta libre, ocupada y reservada (sin distinguir mayúsculas) y rechaza otros valores; `validateTableInput` exige número entero positivo, capacidad entera positiva y limpia la descripción.
   - Código: `packages/api/src/models/table.model.ts` con la interfaz `RestaurantTable`, `normalizeTableStatus` y `validateTableInput`; errores `InvalidTableError`, `InvalidTableStatusError`, `TableNotFoundError`, `DuplicatedTableNumberError` y `TableNotAvailableError` en `errors/DomainErrors.ts`.
 - [ ] **2. Repositorio SQLite de mesas**
