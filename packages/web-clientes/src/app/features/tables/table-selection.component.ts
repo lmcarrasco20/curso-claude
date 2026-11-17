@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { RestaurantService } from '../../core/services/restaurant.service'
 import { TableService } from '../../core/services/table.service'
+import { CartStore } from '../../core/store/cart.store'
 import { Restaurant } from '../../core/models/restaurant.model'
 import { RestaurantTable } from '../../core/models/table.model'
 
@@ -39,6 +40,10 @@ import { RestaurantTable } from '../../core/models/table.model'
         <button type="submit" class="btn btn-primary" [disabled]="searching()">Buscar mesas</button>
       </form>
 
+      @if (notice()) {
+        <div class="alert-error" role="alert">{{ notice() }}</div>
+      }
+
       @if (searching()) {
         <div class="spinner" role="status" aria-label="Buscando mesas"></div>
       } @else if (error()) {
@@ -71,7 +76,7 @@ import { RestaurantTable } from '../../core/models/table.model'
                 }
               </div>
             </fieldset>
-            <button type="submit" class="btn btn-primary continue-btn" [disabled]="!selectedTableId()">Continuar</button>
+            <button type="submit" class="btn btn-primary continue-btn" [disabled]="!selectedTableId() || occupying()">Continuar</button>
           </form>
         }
       }
@@ -158,6 +163,7 @@ export class TableSelectionComponent implements OnInit {
   private readonly router = inject(Router)
   private readonly restaurantService = inject(RestaurantService)
   private readonly tableService = inject(TableService)
+  private readonly cartStore = inject(CartStore)
 
   restaurantId = ''
   people = 2
@@ -166,9 +172,12 @@ export class TableSelectionComponent implements OnInit {
   readonly tables = signal<RestaurantTable[]>([])
   readonly selectedTableId = signal<string | null>(null)
   readonly searching = signal(false)
+  readonly occupying = signal(false)
   readonly searched = signal(false)
   readonly searchedPeople = signal(0)
   readonly error = signal<string | null>(null)
+  /** Aviso que se muestra junto a la lista de mesas (por ejemplo, si la mesa elegida ya no está libre) */
+  readonly notice = signal<string | null>(null)
   readonly peopleError = signal<string | null>(null)
 
   ngOnInit(): void {
@@ -204,7 +213,25 @@ export class TableSelectionComponent implements OnInit {
   }
 
   continue(): void {
-    if (!this.selectedTableId()) return
-    this.router.navigate(['/restaurants', this.restaurantId])
+    const tableId = this.selectedTableId()
+    if (!tableId || this.occupying()) return
+
+    this.occupying.set(true)
+    this.notice.set(null)
+    this.tableService.occupy(this.restaurantId, tableId).subscribe({
+      next: table => {
+        this.cartStore.setTable({ id: table.id, number: table.number, restaurantId: this.restaurantId })
+        this.router.navigate(['/restaurants', this.restaurantId])
+      },
+      error: err => {
+        this.occupying.set(false)
+        if (err?.status === 409) {
+          this.search()
+          this.notice.set('Esa mesa acaba de ocuparse. Elige otra mesa.')
+        } else {
+          this.notice.set('No se pudo reservar la mesa. Inténtalo de nuevo.')
+        }
+      }
+    })
   }
 }

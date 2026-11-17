@@ -11,6 +11,12 @@ export interface Dish {
   ingredients: { ingredientId: string; quantity: number }[]
 }
 
+export interface CartTable {
+  id: string
+  number: number
+  restaurantId: string
+}
+
 export interface CartItem {
   dish: Dish
   quantity: number
@@ -21,8 +27,11 @@ export interface CartItem {
 export class CartStore {
   private readonly _items = signal<CartItem[]>([])
   private readonly _restaurantId = signal<string | null>(null)
+  private readonly _table = signal<CartTable | null>(null)
 
   readonly items = this._items.asReadonly()
+  /** Mesa elegida por el cliente; se conserva tras confirmar un pedido para poder seguir pidiendo */
+  readonly table = this._table.asReadonly()
   readonly restaurantId = this._restaurantId.asReadonly()
 
   readonly total = computed(() =>
@@ -32,6 +41,14 @@ export class CartStore {
   readonly itemCount = computed(() =>
     this._items().reduce((count, item) => count + item.quantity, 0)
   )
+
+  setTable(table: CartTable): void {
+    this._table.set(table)
+  }
+
+  clearTable(): void {
+    this._table.set(null)
+  }
 
   addItem(dish: Dish, quantity: number = 1, notes: string = ''): void {
     if (this._restaurantId() && this._restaurantId() !== dish.restaurantId) {

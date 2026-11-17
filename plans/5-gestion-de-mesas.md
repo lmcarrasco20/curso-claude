@@ -80,7 +80,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **12. web-clientes: elegir mesa antes de la carta**
   - Test: sin test automático; `ng build` y prueba del flujo completo.
   - Código: `core/models/table.model.ts`, `core/services/table.service.ts` y `features/tables/table-selection.component.ts` (comensales, mesas disponibles, elegir y continuar); `RestaurantListComponent` enlaza a `/restaurants/:id/tables`; ruta nueva en `app.routes.ts`.
-- [ ] **13. web-clientes: pedido con la mesa elegida**
+- [x] **13. web-clientes: pedido con la mesa elegida**
   - Test: sin test automático; `ng build` y prueba de extremo a extremo (pedido con mesa visible en empleados).
   - Código: al continuar se llama a `occupy`, la mesa se guarda en `CartStore` y se navega a la carta; `OrderService.createOrder` envía el `tableId`; la carta y el carrito muestran la mesa y, si no hay mesa elegida, redirigen a la selección.
 
