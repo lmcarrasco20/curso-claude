@@ -50,7 +50,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **2. Repositorio SQLite de mesas**
   - Test: `packages/api/src/repositories/table.repository.test.ts` (base en memoria): guardar y buscar por id, listar por restaurante ordenado por número, actualizar, eliminar, buscar por número dentro del restaurante y actualizar solo el estado.
   - Código: tabla `restaurant_tables` en `config/database.ts` (número único por restaurante) y `packages/api/src/repositories/table.repository.ts` con la interfaz `TableRepository` y `SqliteTableRepository`; `repositories/mocks/MockTableRepository.ts`.
-- [ ] **3. Servicio: CRUD de mesas**
+- [x] **3. Servicio: CRUD de mesas**
   - Test: `packages/api/src/services/table.service.test.ts` con el repositorio mock: crear con estado inicial `libre`, rechazar número duplicado en el mismo restaurante (y permitirlo en otro), listar, obtener (404 si no existe o es de otro restaurante), actualizar y eliminar.
   - Código: `packages/api/src/services/table.service.ts` con `create`, `findByRestaurantId`, `findById`, `update` y `delete`.
 - [ ] **4. Servicio: estados, mesas disponibles y ocupación**
