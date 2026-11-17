@@ -54,7 +54,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **4. Equivalencias puntos → descuento: modelo y repositorio**
   - Test: `packages/api/src/models/points-redemption.model.test.ts` (validación: puntos enteros positivos, descuento mayor que 0) y `packages/api/src/repositories/points-redemption.repository.test.ts` (CRUD y puntos únicos por restaurante).
   - Código: `models/points-redemption.model.ts`, tabla `points_rewards` (id, restaurante, puntos, descuento en euros), `repositories/points-redemption.repository.ts` y su mock.
-- [ ] **5. Equivalencias puntos → descuento: servicio**
+- [x] **5. Equivalencias puntos → descuento: servicio**
   - Test: `packages/api/src/services/points-reward.service.test.ts`: crear, rechazar puntos duplicados en el restaurante, listar ordenado por puntos, actualizar y eliminar.
   - Código: `packages/api/src/services/points-reward.service.ts`.
 - [ ] **6. Canje de puntos: saldo y registro**
