@@ -60,7 +60,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **6. Canje de puntos: saldo y registro**
   - Test: ampliar `points.service.test.ts` y `points.repository.test.ts`: el saldo es lo ganado menos lo canjeado; `redeem` descuenta puntos una sola vez por pedido y falla si no hay saldo suficiente (`InsufficientPointsError`).
   - Código: tabla `points_redemptions` (único por pedido), métodos `addRedeemed` y `getBalance` actualizado en `PointsRepository`/`SqlitePointsRepository`/mock y `redeem` en `PointsService`.
-- [ ] **7. Cálculo de la cuenta**
+- [x] **7. Cálculo de la cuenta**
   - Test: `packages/api/src/models/bill.model.test.ts`: `calculateBill` devuelve subtotal, descuento del código, descuento por puntos y total; los descuentos se aplican en ese orden, el total nunca es negativo y el descuento por puntos se limita al importe restante.
   - Código: `packages/api/src/models/bill.model.ts`.
 - [ ] **8. Servicio "pedir la cuenta"**
