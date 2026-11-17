@@ -56,7 +56,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **4. Servicio: estados, mesas disponibles y ocupación**
   - Test: en `table.service.test.ts`: `changeStatus` valida el estado; `findAvailable` devuelve solo mesas libres con capacidad mayor o igual a los comensales, ordenadas por capacidad y número; `occupy` pasa una mesa libre a ocupada y lanza `TableNotAvailableError` si no está libre.
   - Código: métodos `changeStatus`, `findAvailable` y `occupy` en el servicio.
-- [ ] **5. Controller, rutas y cableado HTTP**
+- [x] **5. Controller, rutas y cableado HTTP**
   - Test: no hay tests HTTP en el proyecto. Se añade un test del mapeo de errores a códigos HTTP en `packages/api/src/contexts/shared/infrastructure/http/errorHandler.test.ts` (404 para `TableNotFoundError`, 409 para `TableNotAvailableError` y `DuplicatedTableNumberError`, 400 para el resto) y se verifica el flujo con la API en marcha.
   - Código: `controllers/table.controller.ts`, `routes/table.routes.ts` (CRUD admin; listado y cambio de estado para empleados; `occupy` para usuarios autenticados) y `routes/table.public.routes.ts` (mesas libres por capacidad), montados en `app.ts`; `errorHandler` con 409 y el 404 nuevo.
 - [ ] **6. Número de mesa en los pedidos**
