@@ -227,6 +227,21 @@ export class Database {
                 points INTEGER NOT NULL,
                 created_at TEXT NOT NULL,
                 FOREIGN KEY(restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS bills (
+                id TEXT PRIMARY KEY,
+                order_id TEXT NOT NULL UNIQUE,
+                client_id TEXT NOT NULL,
+                restaurant_id TEXT NOT NULL,
+                discount_code TEXT,
+                subtotal REAL NOT NULL,
+                code_discount REAL NOT NULL,
+                points_used INTEGER NOT NULL,
+                points_discount REAL NOT NULL,
+                total REAL NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
             )
         `.split(';')
 

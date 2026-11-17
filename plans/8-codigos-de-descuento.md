@@ -63,7 +63,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **7. Cálculo de la cuenta**
   - Test: `packages/api/src/models/bill.model.test.ts`: `calculateBill` devuelve subtotal, descuento del código, descuento por puntos y total; los descuentos se aplican en ese orden, el total nunca es negativo y el descuento por puntos se limita al importe restante.
   - Código: `packages/api/src/models/bill.model.ts`.
-- [ ] **8. Servicio "pedir la cuenta"**
+- [x] **8. Servicio "pedir la cuenta"**
   - Test: `packages/api/src/services/bill.service.test.ts` con mocks: solo el cliente dueño del pedido puede pedirla, no se puede pedir dos veces, aplica un código válido, rechaza un código inexistente o inactivo, canjea puntos de una equivalencia si hay saldo y rechaza si no, y devuelve la cuenta guardada.
   - Código: tabla `bills`, `repositories/bill.repository.ts` y su mock, `services/bill.service.ts`; errores `BillAlreadyRequestedError` y `OrderNotOwnedError`.
 - [ ] **9. Controllers y rutas**

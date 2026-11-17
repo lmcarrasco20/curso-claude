@@ -13,9 +13,9 @@ export interface BillInput {
     /** Importe de los platos del pedido, sin descuentos */
     subtotal: number
     /** Código de descuento aplicado, si lo hay */
-    code?: Pick<DiscountCode, 'type' | 'value'>
+    code?: Pick<DiscountCode, 'type' | 'value'> | undefined
     /** Equivalencia de puntos canjeada, si la hay */
-    reward?: { points: number; discount: number }
+    reward?: { points: number; discount: number } | undefined
 }
 
 /** Cuenta definitiva de un pedido: se aplica primero el código y después el canje de puntos */

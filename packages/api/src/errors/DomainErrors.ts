@@ -252,3 +252,21 @@ export class InsufficientPointsError extends AppError {
     super('Not enough points')
   }
 }
+
+export class BillAlreadyRequestedError extends AppError {
+  constructor() {
+    super('The bill for this order was already requested')
+  }
+}
+
+export class OrderNotOwnedError extends AppError {
+  constructor() {
+    super('The order does not belong to the user')
+  }
+}
+
+export class BillNotFoundError extends AppError {
+  constructor() {
+    super('Bill not found')
+  }
+}
