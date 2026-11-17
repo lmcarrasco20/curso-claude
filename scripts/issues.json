@@ -23,7 +23,8 @@
     "title": "Seed no borra datos previos",
     "type": "bug",
     "projects": ["api"],
-    "body": "Al ejecutar el script \"api/src/scripts/seed.py\" no resetea la BBDD entera, sino que si hemos añadido o modificado algunos valores, estos permanecen.\n\nDebe de eliminar primero todos los datos de las tablas, y luego rellenarlas como ya está haciendo."
+    "body": "Al ejecutar el script \"api/src/scripts/seed.py\" no resetea la BBDD entera, sino que si hemos añadido o modificado algunos valores, estos permanecen.\n\nDebe de eliminar primero todos los datos de las tablas, y luego rellenarlas como ya está haciendo.",
+    "corregido": "si"
   },
   {
     "title": "Gestión de mesas",
