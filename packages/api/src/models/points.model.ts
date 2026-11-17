@@ -40,10 +40,16 @@ export function validatePointsRule(eurosPerBlock: number, pointsPerBlock: number
     return { eurosPerBlock, pointsPerBlock }
 }
 
-/** Importe total del pedido en euros (precio x cantidad de cada item) */
+/**
+ * Importe total del pedido en euros: los platos sueltos (precio x cantidad) más el precio de cada pack.
+ * Los platos que pertenecen a un pack no suman su precio, porque el pack tiene precio cerrado.
+ */
 export function calculateOrderTotal(order: Order): number {
-    const cents = order.items.reduce((sum, item) => sum + Math.round((item.dishPrice ?? 0) * 100) * item.quantity, 0)
-    return cents / 100
+    const itemsCents = order.items
+        .filter(item => !item.orderPackId)
+        .reduce((sum, item) => sum + Math.round((item.dishPrice ?? 0) * 100) * item.quantity, 0)
+    const packsCents = (order.packs ?? []).reduce((sum, pack) => sum + Math.round(pack.price * 100), 0)
+    return (itemsCents + packsCents) / 100
 }
 
 /** Puntos ganados por un importe: Y puntos por cada X euros completos */

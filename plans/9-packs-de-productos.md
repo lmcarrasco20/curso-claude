@@ -59,7 +59,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **6. Guardar y leer los packs de un pedido**
   - Test: `packages/api/src/repositories/order.repository.test.ts` (base en memoria): un pedido con packs se guarda y se lee con `packs` e items marcados con `orderPackId`, tanto por id como en activos y por cliente.
   - Código: tablas `order_packs` y `order_pack_items` en `config/database.ts` y soporte en `SqliteOrderRepository` y `MockOrderRepository`.
-- [ ] **7. Total del pedido con packs**
+- [x] **7. Total del pedido con packs**
   - Test: ampliar `points.model.test.ts`: `calculateOrderTotal` cuenta el precio de cada pack una vez y no suma el precio de los platos que pertenecen a un pack.
   - Código: `calculateOrderTotal` en `models/points.model.ts`.
 - [ ] **8. Controllers, rutas y errores**

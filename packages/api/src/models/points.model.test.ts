@@ -30,6 +30,37 @@ describe('calculateOrderTotal', () => {
         expect(calculateOrderTotal(order)).toBe(17)
     })
 
+    it('cuenta el precio del pack una vez y no el de los platos que lo componen', () => {
+        const order = {
+            items: [
+                { id: 'a', dishId: 'd1', quantity: 1, notes: null, status: 'entregado', dishPrice: 12, orderPackId: 'op1' },
+                { id: 'b', dishId: 'd2', quantity: 1, notes: null, status: 'entregado', dishPrice: 3, orderPackId: 'op1' },
+                { id: 'c', dishId: 'd3', quantity: 1, notes: null, status: 'entregado', dishPrice: 5 }
+            ],
+            packs: [{ id: 'op1', packId: 'p1', name: 'Menú', price: 10 }]
+        } as Order
+        expect(calculateOrderTotal(order)).toBe(15)
+    })
+
+    it('suma el precio de cada pack pedido', () => {
+        const order = {
+            items: [
+                { id: 'a', dishId: 'd1', quantity: 1, notes: null, status: 'entregado', dishPrice: 12, orderPackId: 'op1' },
+                { id: 'b', dishId: 'd1', quantity: 1, notes: null, status: 'entregado', dishPrice: 12, orderPackId: 'op2' }
+            ],
+            packs: [
+                { id: 'op1', packId: 'p1', name: 'Menú', price: 10.5 },
+                { id: 'op2', packId: 'p1', name: 'Menú', price: 10.5 }
+            ]
+        } as Order
+        expect(calculateOrderTotal(order)).toBe(21)
+    })
+
+    it('un pedido sin packs se calcula como antes', () => {
+        const order = { items: [{ id: 'a', dishId: 'd', quantity: 2, notes: null, status: 'entregado', dishPrice: 4 }], packs: [] } as Order
+        expect(calculateOrderTotal(order)).toBe(8)
+    })
+
     it('ignora items sin precio', () => {
         const order = { items: [{ id: 'a', dishId: 'd', quantity: 1, notes: null, status: 'entregado' }] } as Order
         expect(calculateOrderTotal(order)).toBe(0)
