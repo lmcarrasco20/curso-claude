@@ -47,7 +47,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **1. Modelo de mesa y validaciones**
   - Test: `packages/api/src/models/table.model.test.ts`: `normalizeTableStatus` acepta libre, ocupada y reservada (sin distinguir mayúsculas) y rechaza otros valores; `validateTableInput` exige número entero positivo, capacidad entera positiva y limpia la descripción.
   - Código: `packages/api/src/models/table.model.ts` con la interfaz `RestaurantTable`, `normalizeTableStatus` y `validateTableInput`; errores `InvalidTableError`, `InvalidTableStatusError`, `TableNotFoundError`, `DuplicatedTableNumberError` y `TableNotAvailableError` en `errors/DomainErrors.ts`.
-- [ ] **2. Repositorio SQLite de mesas**
+- [x] **2. Repositorio SQLite de mesas**
   - Test: `packages/api/src/repositories/table.repository.test.ts` (base en memoria): guardar y buscar por id, listar por restaurante ordenado por número, actualizar, eliminar, buscar por número dentro del restaurante y actualizar solo el estado.
   - Código: tabla `restaurant_tables` en `config/database.ts` (número único por restaurante) y `packages/api/src/repositories/table.repository.ts` con la interfaz `TableRepository` y `SqliteTableRepository`; `repositories/mocks/MockTableRepository.ts`.
 - [ ] **3. Servicio: CRUD de mesas**
