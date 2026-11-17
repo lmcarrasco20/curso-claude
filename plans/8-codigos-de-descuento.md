@@ -66,7 +66,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **8. Servicio "pedir la cuenta"**
   - Test: `packages/api/src/services/bill.service.test.ts` con mocks: solo el cliente dueño del pedido puede pedirla, no se puede pedir dos veces, aplica un código válido, rechaza un código inexistente o inactivo, canjea puntos de una equivalencia si hay saldo y rechaza si no, y devuelve la cuenta guardada.
   - Código: tabla `bills`, `repositories/bill.repository.ts` y su mock, `services/bill.service.ts`; errores `BillAlreadyRequestedError` y `OrderNotOwnedError`.
-- [ ] **9. Controllers y rutas**
+- [x] **9. Controllers y rutas**
   - Test: ampliar `errorHandler.test.ts` con los códigos HTTP de los errores nuevos (404, 409, 403 y 400) y verificar el flujo con la API en marcha.
   - Código: `controllers/discount.controller.ts`, `points-reward.controller.ts` y `bill.controller.ts`; rutas `/restaurants/:restaurantId/discount-codes` (admin y gerente), `/restaurants/:restaurantId/points-rewards` (CRUD admin; listado también para clientes) y `POST /orders/:id/bill`; cableado en `app.ts` y `order.routes.ts`.
 - [ ] **10. Seed, OpenAPI y modelo de datos**

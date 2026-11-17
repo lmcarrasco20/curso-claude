@@ -7,7 +7,19 @@ import {
     DuplicatedTableNumberError,
     InvalidTableError,
     InvalidTableStatusError,
-    InvalidCredentialsError
+    InvalidCredentialsError,
+    DiscountCodeNotFoundError,
+    PointsRewardNotFoundError,
+    BillNotFoundError,
+    OrderNotFoundError,
+    DuplicatedDiscountCodeError,
+    DuplicatedPointsRewardError,
+    BillAlreadyRequestedError,
+    OrderNotOwnedError,
+    InvalidDiscountError,
+    InvalidDiscountCodeError,
+    InvalidPointsRewardError,
+    InsufficientPointsError
 } from '@errors/DomainErrors.js'
 
 const handle = (error: unknown): { status: number; body: any } => {
@@ -43,4 +55,28 @@ describe('errorHandler', () => {
     it('devuelve 500 para errores desconocidos', () => {
         expect(handle(new Error('boom')).status).toBe(500)
     })
+
+    it.each([new DiscountCodeNotFoundError(), new PointsRewardNotFoundError(), new BillNotFoundError(), new OrderNotFoundError()])(
+        'devuelve 404 para %s', error => {
+            expect(handle(error).status).toBe(404)
+        }
+    )
+
+    it.each([new DuplicatedDiscountCodeError(), new DuplicatedPointsRewardError(), new BillAlreadyRequestedError()])(
+        'devuelve 409 para %s', error => {
+            expect(handle(error).status).toBe(409)
+        }
+    )
+
+    it('devuelve 403 si el pedido no es del usuario', () => {
+        const { status, body } = handle(new OrderNotOwnedError())
+        expect(status).toBe(403)
+        expect(body.error).toBe('OrderNotOwnedError')
+    })
+
+    it.each([new InvalidDiscountError(), new InvalidDiscountCodeError(), new InvalidPointsRewardError(), new InsufficientPointsError()])(
+        'devuelve 400 para %s', error => {
+            expect(handle(error).status).toBe(400)
+        }
+    )
 })

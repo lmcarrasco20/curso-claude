@@ -9,6 +9,8 @@ import dishRoutes from '@routes/dish.routes.js'
 import publicRestaurantRoutes from '@routes/restaurant.public.routes.js'
 import publicDishRoutes from '@routes/dish.public.routes.js'
 import orderRoutes from '@routes/order.routes.js'
+import discountRoutes from '@routes/discount.routes.js'
+import pointsRewardRoutes from '@routes/points-reward.routes.js'
 import tableRoutes from '@routes/table.routes.js'
 import publicTableRoutes from '@routes/table.public.routes.js'
 import { pointsRouter, pointsRuleRouter } from '@routes/points.routes.js'
@@ -30,6 +32,8 @@ app.use('/api/v1/restaurants', restaurantRoutes)
 app.use('/api/v1/restaurants/:restaurantId/ingredients', ingredientRoutes)
 app.use('/api/v1/restaurants/:restaurantId/dishes', dishRoutes)
 app.use('/api/v1/restaurants/:restaurantId/tables', tableRoutes)
+app.use('/api/v1/restaurants/:restaurantId/discount-codes', discountRoutes)
+app.use('/api/v1/restaurants/:restaurantId/points-rewards', pointsRewardRoutes)
 app.use('/api/v1/restaurants/:restaurantId/points-rule', pointsRuleRouter)
 app.use('/api/v1/restaurants/:restaurantId/employees', restaurantEmployeeRoutes)
 

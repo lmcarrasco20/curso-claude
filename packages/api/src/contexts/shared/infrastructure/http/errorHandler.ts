@@ -6,12 +6,23 @@ const NOT_FOUND_ERRORS = [
     'RestaurantNotFoundError',
     'IngredientNotFoundError',
     'DishNotFoundError',
-    'TableNotFoundError'
+    'TableNotFoundError',
+    'DiscountCodeNotFoundError',
+    'PointsRewardNotFoundError',
+    'BillNotFoundError',
+    'OrderNotFoundError'
 ]
 
 const CONFLICT_ERRORS = [
     'TableNotAvailableError',
-    'DuplicatedTableNumberError'
+    'DuplicatedTableNumberError',
+    'DuplicatedDiscountCodeError',
+    'DuplicatedPointsRewardError',
+    'BillAlreadyRequestedError'
+]
+
+const FORBIDDEN_ERRORS = [
+    'OrderNotOwnedError'
 ]
 
 const UNAUTHORIZED_ERRORS = [
@@ -28,6 +39,8 @@ export const errorHandler = (err: any, _req: Request, res: Response, _next: Next
             statusCode = 401
         } else if (CONFLICT_ERRORS.includes(err.name)) {
             statusCode = 409
+        } else if (FORBIDDEN_ERRORS.includes(err.name)) {
+            statusCode = 403
         }
 
         res.status(statusCode).json({
