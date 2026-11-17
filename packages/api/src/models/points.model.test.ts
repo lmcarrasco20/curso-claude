@@ -57,7 +57,7 @@ describe('calculateOrderTotal', () => {
     })
 
     it('un pedido sin packs se calcula como antes', () => {
-        const order = { items: [{ id: 'a', dishId: 'd', quantity: 2, notes: null, status: 'entregado', dishPrice: 4 }], packs: [] } as Order
+        const order = { items: [{ id: 'a', dishId: 'd', quantity: 2, notes: null, status: 'entregado', dishPrice: 4 }], packs: [] } as unknown as Order
         expect(calculateOrderTotal(order)).toBe(8)
     })
 
