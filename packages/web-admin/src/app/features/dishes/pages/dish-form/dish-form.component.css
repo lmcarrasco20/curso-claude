@@ -42,10 +42,15 @@ textarea.form-control {
   border-top: 1px solid var(--border-color);
 }
 
-.ingredients-section h3 {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
+fieldset.ingredients-section {
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  min-width: 0;
+}
+
+.empty-hint {
+  color: var(--text-secondary);
   margin-bottom: 14px;
 }
 
@@ -54,13 +59,14 @@ textarea.form-control {
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 14px;
+  list-style: none;
 }
 
 .ingredient-chip {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 4px 6px 4px 12px;
   background: var(--bg-hover);
   border: 1px solid var(--border-color);
   border-radius: 20px;
@@ -70,11 +76,15 @@ textarea.form-control {
 
 .chip-remove {
   background: transparent;
-  color: var(--text-muted);
-  padding: 2px;
+  color: var(--text-secondary);
+  min-width: 24px;
+  min-height: 24px;
+  padding: 4px;
   border-radius: 50%;
   transition: all var(--transition);
-  display: flex;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chip-remove:hover {
@@ -88,8 +98,12 @@ textarea.form-control {
   align-items: flex-end;
 }
 
-.add-ingredient-row select {
+.add-ingredient-row .grow {
   flex: 1;
+}
+
+.add-btn {
+  min-height: 40px;
 }
 
 .qty-input {
@@ -113,23 +127,75 @@ select.form-control {
   padding-right: 32px;
 }
 
-.fake-title {
+.page-title {
   font-size: 22px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.fake-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.fake-subtitle {
+.section-title {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
+  padding: 0 4px;
   margin-bottom: 14px;
+}
+
+.required-hint {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.field-error {
+  color: #fca5a5;
+  font-size: 13px;
+}
+
+.form-control[aria-invalid='true'] {
+  border-color: #fca5a5;
+}
+
+/* El placeholder de la hoja global tiene contraste insuficiente (< 4.5:1) */
+.form-control::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Foco visible (WCAG 2.4.7 / 2.4.11) */
+a:focus-visible,
+button:focus-visible,
+.form-control:focus-visible,
+[tabindex='-1']:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+.form-control:focus-visible {
+  border-color: var(--border-focus);
+}
+
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.back-link {
+  min-width: 24px;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn, .chip-remove {
