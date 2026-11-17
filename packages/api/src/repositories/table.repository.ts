@@ -22,6 +22,8 @@ export interface TableRepository {
     findByRestaurantAndNumber(restaurantId: string, number: number): Promise<RestaurantTable | null>
     save(table: RestaurantTable): Promise<void>
     updateStatus(id: string, status: string, updatedAt: string): Promise<void>
+    /** Cambia el estado solo si el actual es `expected`. Devuelve false si otro lo había cambiado antes. */
+    updateStatusIfCurrent(id: string, expected: string, next: string, updatedAt: string): Promise<boolean>
     delete(id: string): Promise<void>
 }
 
@@ -60,6 +62,14 @@ export class SqliteTableRepository implements TableRepository {
 
     async updateStatus(id: string, status: string, updatedAt: string): Promise<void> {
         await this.db.run('UPDATE restaurant_tables SET status = ?, updated_at = ? WHERE id = ?', [status, updatedAt, id])
+    }
+
+    async updateStatusIfCurrent(id: string, expected: string, next: string, updatedAt: string): Promise<boolean> {
+        const result = await this.db.run(
+            'UPDATE restaurant_tables SET status = ?, updated_at = ? WHERE id = ? AND status = ?',
+            [next, updatedAt, id, expected]
+        )
+        return result.changes > 0
     }
 
     async delete(id: string): Promise<void> {

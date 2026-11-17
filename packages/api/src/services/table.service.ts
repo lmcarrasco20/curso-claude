@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto'
 import type { RestaurantTable } from '@models/table.model.js'
 import { normalizeTableStatus, validateTableInput } from '@models/table.model.js'
 import type { TableRepository } from '@repositories/table.repository.js'
-import { DuplicatedTableNumberError, TableNotFoundError } from '@errors/DomainErrors.js'
+import { DuplicatedTableNumberError, InvalidTableError, TableNotAvailableError, TableNotFoundError } from '@errors/DomainErrors.js'
 
 export interface CreateTableDTO {
     restaurantId: string
@@ -65,6 +65,37 @@ export class TableService {
         }
         await this.tableRepository.save(updated)
         return updated
+    }
+
+    async changeStatus(restaurantId: string, id: string, status: string): Promise<RestaurantTable> {
+        await this.findById(restaurantId, id)
+        const normalized = normalizeTableStatus(status)
+        await this.tableRepository.updateStatus(id, normalized, new Date().toISOString())
+        return this.findById(restaurantId, id)
+    }
+
+    /** Mesas libres con capacidad para `people` comensales, de menor a mayor capacidad */
+    async findAvailable(restaurantId: string, people: number): Promise<RestaurantTable[]> {
+        if (!Number.isInteger(people) || people <= 0) {
+            throw new InvalidTableError('El número de comensales debe ser un entero mayor que 0')
+        }
+        const tables = await this.tableRepository.findByRestaurantId(restaurantId)
+        return tables
+            .filter(t => t.status === 'libre' && t.capacity >= people)
+            .sort((a, b) => a.capacity - b.capacity || a.number - b.number)
+    }
+
+    /** Pasa una mesa libre a ocupada. El cambio es atómico para que dos clientes no la ocupen a la vez. */
+    async occupy(restaurantId: string, id: string): Promise<RestaurantTable> {
+        const table = await this.findById(restaurantId, id)
+        if (table.status !== 'libre') {
+            throw new TableNotAvailableError()
+        }
+        const changed = await this.tableRepository.updateStatusIfCurrent(id, 'libre', 'ocupada', new Date().toISOString())
+        if (!changed) {
+            throw new TableNotAvailableError()
+        }
+        return this.findById(restaurantId, id)
     }
 
     async delete(restaurantId: string, id: string): Promise<void> {

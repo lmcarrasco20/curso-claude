@@ -31,6 +31,14 @@ export class MockTableRepository implements TableRepository {
         }
     }
 
+    async updateStatusIfCurrent(id: string, expected: string, next: string, updatedAt: string): Promise<boolean> {
+        const table = this.tables.find(t => t.id === id)
+        if (!table || table.status !== expected) return false
+        table.status = normalizeTableStatus(next)
+        table.updatedAt = updatedAt
+        return true
+    }
+
     async delete(id: string): Promise<void> {
         this.tables = this.tables.filter(t => t.id !== id)
     }

@@ -68,6 +68,13 @@ describe('SqliteTableRepository (Integration)', () => {
         expect(await repo.findById('t2')).toMatchObject({ status: 'ocupada', updatedAt: '2026-03-01T00:00:00.000Z', number: 2 })
     })
 
+    it('cambia el estado solo si el actual es el esperado', async () => {
+        await repo.save(buildTable({ id: 't4', number: 4, status: 'libre' }))
+        expect(await repo.updateStatusIfCurrent('t4', 'libre', 'ocupada', '2026-04-01T00:00:00.000Z')).toBe(true)
+        expect(await repo.updateStatusIfCurrent('t4', 'libre', 'ocupada', '2026-04-02T00:00:00.000Z')).toBe(false)
+        expect(await repo.findById('t4')).toMatchObject({ status: 'ocupada', updatedAt: '2026-04-01T00:00:00.000Z' })
+    })
+
     it('elimina una mesa', async () => {
         await repo.delete('t3')
         expect(await repo.findById('t3')).toBeNull()

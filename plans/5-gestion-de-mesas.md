@@ -53,7 +53,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **3. Servicio: CRUD de mesas**
   - Test: `packages/api/src/services/table.service.test.ts` con el repositorio mock: crear con estado inicial `libre`, rechazar número duplicado en el mismo restaurante (y permitirlo en otro), listar, obtener (404 si no existe o es de otro restaurante), actualizar y eliminar.
   - Código: `packages/api/src/services/table.service.ts` con `create`, `findByRestaurantId`, `findById`, `update` y `delete`.
-- [ ] **4. Servicio: estados, mesas disponibles y ocupación**
+- [x] **4. Servicio: estados, mesas disponibles y ocupación**
   - Test: en `table.service.test.ts`: `changeStatus` valida el estado; `findAvailable` devuelve solo mesas libres con capacidad mayor o igual a los comensales, ordenadas por capacidad y número; `occupy` pasa una mesa libre a ocupada y lanza `TableNotAvailableError` si no está libre.
   - Código: métodos `changeStatus`, `findAvailable` y `occupy` en el servicio.
 - [ ] **5. Controller, rutas y cableado HTTP**
