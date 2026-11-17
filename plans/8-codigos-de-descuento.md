@@ -81,7 +81,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **13. web-admin: equivalencias de puntos**
   - Test: sin test automático; `ng build` y prueba de crear, editar y borrar.
   - Código: `features/points-rewards/` con servicio, store y una página con listado y formulario integrado ("X puntos = Y € de descuento"), ruta y enlace "Puntos" en el menú.
-- [ ] **14. web-clientes: pedir la cuenta**
+- [x] **14. web-clientes: pedir la cuenta**
   - Test: sin test automático; `ng build` y prueba de extremo a extremo (código, canje de puntos, cuenta final).
   - Código: `core/services/bill.service.ts`, `core/models/bill.model.ts` y, en `order-detail.component.ts`, el bloque "Pedir la cuenta" con campo de código, selector de canje de puntos con el saldo del cliente, mensaje de error y resumen de la cuenta (subtotal, descuentos y total).
 

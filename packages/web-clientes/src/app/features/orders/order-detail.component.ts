@@ -4,11 +4,12 @@ import { DecimalPipe, DatePipe, NgClass } from '@angular/common'
 import { LucideAngularModule } from 'lucide-angular'
 import { OrderService } from '../../core/services/order.service'
 import { Order, OrderItem } from '../../core/models/order.model'
+import { BillRequestComponent } from './bill-request.component'
 
 @Component({
   selector: 'app-order-detail',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, DatePipe, NgClass, LucideAngularModule],
+  imports: [RouterLink, DecimalPipe, DatePipe, NgClass, LucideAngularModule, BillRequestComponent],
   template: `
     <div class="container">
       @if (loading()) {
@@ -64,6 +65,8 @@ import { Order, OrderItem } from '../../core/models/order.model'
             <strong>{{ getTotal() | number:'1.2-2' }} €</strong>
           </div>
         </div>
+
+        <app-bill-request [orderId]="order()!.id" [restaurantId]="order()!.restaurantId" />
       }
     </div>
   `,
