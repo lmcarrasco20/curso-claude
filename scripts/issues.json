@@ -37,7 +37,8 @@
     "title": "Generar documentación con OpenAPI",
     "type": "feature",
     "projects": ["api"],
-    "body": "Generar un documento de OpenAPI 3 en el que se muestre el funcionamiento de la API, para poder publicarlo."
+    "body": "Generar un documento de OpenAPI 3 en el que se muestre el funcionamiento de la API, para poder publicarlo.",
+    "corregido": "si"
   },
   {
     "title": "Implementar sistema de puntos",
