@@ -5,7 +5,7 @@
 - **Issue**: #5
 - **Título**: Gestión de mesas
 - **Fecha**: 2026-11-17
-- **Estado**: borrador
+- **Estado**: implementado
 - **Rama sugerida**: `feature/5-gestion-de-mesas`
 
 ## Objetivo y alcance
@@ -86,14 +86,14 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 
 ## Criterios de aceptación
 
-- [ ] El administrador puede crear, editar, listar y borrar mesas de un restaurante, con número, descripción, capacidad y estado (libre, ocupada, reservada); no puede repetir el número dentro de un restaurante.
-- [ ] Un camarero o un gerente ve el estado de las mesas, lo cambia, y ve los pedidos de las mesas ocupadas con el estado de sus items.
-- [ ] Un cliente indica el número de personas, ve solo mesas libres con capacidad suficiente, elige una y continúa: la mesa pasa a ocupada y llega a la carta.
-- [ ] Un cliente no puede ocupar una mesa que ya no está libre (409).
-- [ ] El pedido enviado queda asociado a la mesa y las pantallas de empleados muestran el número de mesa.
-- [ ] El documento OpenAPI y el modelo de datos recogen las mesas.
-- [ ] Todas las tareas están completadas
-- [ ] `npm test` pasa en verde
+- [x] El administrador puede crear, editar, listar y borrar mesas de un restaurante, con número, descripción, capacidad y estado (libre, ocupada, reservada); no puede repetir el número dentro de un restaurante.
+- [x] Un camarero o un gerente ve el estado de las mesas, lo cambia, y ve los pedidos de las mesas ocupadas con el estado de sus items.
+- [x] Un cliente indica el número de personas, ve solo mesas libres con capacidad suficiente, elige una y continúa: la mesa pasa a ocupada y llega a la carta.
+- [x] Un cliente no puede ocupar una mesa que ya no está libre (409).
+- [x] El pedido enviado queda asociado a la mesa y las pantallas de empleados muestran el número de mesa.
+- [x] El documento OpenAPI y el modelo de datos recogen las mesas.
+- [x] Todas las tareas están completadas
+- [x] `npm test` pasa en verde
 
 ## Dudas abiertas
 
