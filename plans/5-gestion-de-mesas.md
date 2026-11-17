@@ -71,7 +71,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **9. web-admin: listado de mesas y enlace en el menú**
   - Test: sin test automático; `ng build` y comprobación en el navegador.
   - Código: `pages/table-list/table-list.component.*` con la tabla de mesas, borrado con confirmación y la recarga al cambiar de restaurante (escuchando `paramMap`), `tables.routes.ts`, ruta `tables` en `app.routes.ts` y enlace "Mesas" en el menú lateral de `shell.component.html` (icono registrado en `app.config.ts`).
-- [ ] **10. web-admin: formulario de mesa**
+- [x] **10. web-admin: formulario de mesa**
   - Test: sin test automático; `ng build` y prueba creando, editando y borrando una mesa.
   - Código: `pages/table-form/table-form.component.*` (número, descripción, capacidad y estado) con etiquetas asociadas, validación y errores accesibles, rutas `tables/new` y `tables/:id/edit`.
 - [ ] **11. web-empleados: página de mesas**

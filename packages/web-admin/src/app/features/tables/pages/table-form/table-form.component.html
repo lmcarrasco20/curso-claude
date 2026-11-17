@@ -1,0 +1,89 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div class="header-back">
+      <a [routerLink]="listUrl" class="back-link" aria-label="Volver al listado de mesas">
+        <lucide-icon name="chevron-left" [size]="18" aria-hidden="true"></lucide-icon>
+      </a>
+      <h1 class="page-title" id="page-title">{{ pageTitle }}</h1>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error" role="alert" id="form-error" tabindex="-1">{{ error() }}</div>
+  }
+
+  <form class="card form-card" (ngSubmit)="onSubmit()" novalidate aria-labelledby="page-title">
+    <p class="required-hint">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="table-number">Número de mesa <span aria-hidden="true">*</span></label>
+        <input
+          id="table-number"
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.number"
+          name="number"
+          min="1"
+          step="1"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().number ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().number ? 'table-number-error' : null"
+        />
+        @if (fieldErrors().number) {
+          <span class="field-error" id="table-number-error">{{ fieldErrors().number }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="table-capacity">Capacidad (personas) <span aria-hidden="true">*</span></label>
+        <input
+          id="table-capacity"
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.capacity"
+          name="capacity"
+          min="1"
+          step="1"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().capacity ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().capacity ? 'table-capacity-error' : null"
+        />
+        @if (fieldErrors().capacity) {
+          <span class="field-error" id="table-capacity-error">{{ fieldErrors().capacity }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="table-status">Estado</label>
+        <select id="table-status" class="form-control" [(ngModel)]="form.status" name="status">
+          @for (s of statuses; track s.value) {
+            <option [value]="s.value">{{ s.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group form-full">
+        <label for="table-description">Descripción (opcional)</label>
+        <input
+          id="table-description"
+          type="text"
+          class="form-control"
+          [(ngModel)]="form.description"
+          name="description"
+          placeholder="Terraza, junto a la ventana..."
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a class="btn btn-secondary" [routerLink]="listUrl">Cancelar</a>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()" [attr.aria-busy]="loading()">
+        {{ loading() ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</div>
