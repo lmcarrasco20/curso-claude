@@ -71,7 +71,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **10. web-admin: servicio, store y listado de packs**
   - Test: sin test automático; `ng build` y comprobación en el navegador.
   - Código: `features/packs/` en `packages/web-admin` con modelo, servicio, store y `pages/pack-list`, ruta y enlace "Packs" en el menú del restaurante.
-- [ ] **11. web-admin: formulario de pack con huecos**
+- [x] **11. web-admin: formulario de pack con huecos**
   - Test: sin test automático; `ng build` y prueba de crear un pack de entrante + principal + bebida con la cerveza bloqueada.
   - Código: `pages/pack-form` con nombre, descripción, precio, disponibilidad, editor de huecos (añadir y quitar por categoría) y casillas para bloquear platos de esa categoría; etiquetas asociadas y errores accesibles; rutas `new` y `:id/edit`.
 - [ ] **12. web-clientes: packs en la carta**

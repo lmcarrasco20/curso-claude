@@ -1,0 +1,137 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div class="header-back">
+      <a [routerLink]="listUrl" class="back-link" aria-label="Volver al listado de packs">
+        <lucide-icon name="chevron-left" [size]="18" aria-hidden="true"></lucide-icon>
+      </a>
+      <h1 class="page-title" id="page-title">{{ pageTitle }}</h1>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error" role="alert" id="form-error" tabindex="-1">{{ error() }}</div>
+  }
+
+  <form class="card form-card" (ngSubmit)="onSubmit()" novalidate aria-labelledby="page-title">
+    <p class="required-hint">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="pack-name">Nombre del pack <span aria-hidden="true">*</span></label>
+        <input
+          id="pack-name"
+          type="text"
+          class="form-control"
+          [(ngModel)]="form.name"
+          name="name"
+          placeholder="Menú del día"
+          autocomplete="off"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().name ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().name ? 'pack-name-error' : null"
+        />
+        @if (fieldErrors().name) {
+          <span class="field-error" id="pack-name-error">{{ fieldErrors().name }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="pack-price">Precio (€) <span aria-hidden="true">*</span></label>
+        <input
+          id="pack-price"
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.price"
+          name="price"
+          min="0"
+          step="0.01"
+          inputmode="decimal"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="fieldErrors().price ? 'true' : null"
+          [attr.aria-describedby]="fieldErrors().price ? 'pack-price-error' : null"
+        />
+        @if (fieldErrors().price) {
+          <span class="field-error" id="pack-price-error">{{ fieldErrors().price }}</span>
+        }
+      </div>
+
+      <div class="form-group form-full">
+        <label for="pack-description">Descripción (opcional)</label>
+        <input id="pack-description" type="text" class="form-control" [(ngModel)]="form.description" name="description" autocomplete="off" />
+      </div>
+
+      <div class="form-group form-full checkbox-group">
+        <label class="checkbox-label" for="pack-available">
+          <input id="pack-available" type="checkbox" [(ngModel)]="form.available" name="available" />
+          Disponible para los clientes
+        </label>
+      </div>
+    </div>
+
+    <fieldset class="slots-section" [attr.aria-describedby]="fieldErrors().slots ? 'slots-error' : null">
+      <legend class="section-title">Huecos del pack</legend>
+      <p class="section-hint">Cada hueco es un plato que elegirá el cliente. Puedes bloquear platos concretos de la categoría.</p>
+
+      @if (fieldErrors().slots) {
+        <span class="field-error" id="slots-error" role="alert">{{ fieldErrors().slots }}</span>
+      }
+
+      <ol class="slot-list">
+        @for (slot of slots(); track $index; let i = $index) {
+          <li class="slot-card">
+            <div class="slot-header">
+              <div class="form-group slot-category">
+                <label [for]="'slot-category-' + i">Hueco {{ i + 1 }}: categoría</label>
+                <select
+                  [id]="'slot-category-' + i"
+                  class="form-control"
+                  [value]="slot.category"
+                  (change)="changeCategory(i, $any($event.target).value)"
+                >
+                  @for (c of categories; track c.value) {
+                    <option [value]="c.value" [selected]="c.value === slot.category">{{ c.label }}</option>
+                  }
+                </select>
+              </div>
+              <button type="button" class="btn btn-danger btn-sm" (click)="removeSlot(i)" [attr.aria-label]="'Quitar el hueco ' + (i + 1)">
+                <lucide-icon name="trash-2" [size]="14" aria-hidden="true"></lucide-icon>
+              </button>
+            </div>
+
+            <fieldset class="blocked-dishes">
+              <legend>Platos bloqueados en el hueco {{ i + 1 }}</legend>
+              @if (dishesOf(slot.category).length === 0) {
+                <p class="section-hint">No hay platos de la categoría {{ categoryLabel(slot.category).toLowerCase() }} en este restaurante.</p>
+              } @else {
+                <div class="dish-checks">
+                  @for (dish of dishesOf(slot.category); track dish.id) {
+                    <label class="checkbox-label">
+                      <input type="checkbox" [checked]="isExcluded(i, dish.id)" (change)="toggleExcluded(i, dish.id)" />
+                      {{ dish.name }}
+                    </label>
+                  }
+                </div>
+              }
+            </fieldset>
+          </li>
+        }
+      </ol>
+
+      <button type="button" class="btn btn-secondary btn-sm" (click)="addSlot()">
+        <lucide-icon name="plus" [size]="14" aria-hidden="true"></lucide-icon>
+        Añadir hueco
+      </button>
+    </fieldset>
+
+    <div class="sr-only" role="status" aria-live="polite">{{ statusMessage() }}</div>
+
+    <div class="form-actions">
+      <a class="btn btn-secondary" [routerLink]="listUrl">Cancelar</a>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()" [attr.aria-busy]="loading()">
+        {{ loading() ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</div>
