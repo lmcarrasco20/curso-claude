@@ -59,7 +59,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **5. Controller, rutas y cableado HTTP**
   - Test: no hay tests HTTP en el proyecto. Se añade un test del mapeo de errores a códigos HTTP en `packages/api/src/contexts/shared/infrastructure/http/errorHandler.test.ts` (404 para `TableNotFoundError`, 409 para `TableNotAvailableError` y `DuplicatedTableNumberError`, 400 para el resto) y se verifica el flujo con la API en marcha.
   - Código: `controllers/table.controller.ts`, `routes/table.routes.ts` (CRUD admin; listado y cambio de estado para empleados; `occupy` para usuarios autenticados) y `routes/table.public.routes.ts` (mesas libres por capacidad), montados en `app.ts`; `errorHandler` con 409 y el 404 nuevo.
-- [ ] **6. Número de mesa en los pedidos**
+- [x] **6. Número de mesa en los pedidos**
   - Test: ampliar `packages/api/src/repositories/order.repository.test.ts` (o crearlo con base en memoria): un pedido con `tableId` devuelve `tableNumber` al consultarlo por id, por pedidos activos y por cliente.
   - Código: `LEFT JOIN restaurant_tables` en `SqliteOrderRepository` y campo opcional `tableNumber` en `Order`.
 - [ ] **7. Seed, OpenAPI y modelo de datos**

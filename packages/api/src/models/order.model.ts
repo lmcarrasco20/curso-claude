@@ -19,6 +19,8 @@ export interface Order {
     id: string
     restaurantId: string
     tableId: string | null
+    /** Número de la mesa (solo lectura, se obtiene de la tabla de mesas) */
+    tableNumber?: number | null
     clientId: string | null
     createdAt: Date
     items: OrderItem[]
