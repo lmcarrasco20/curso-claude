@@ -65,7 +65,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **7. Seed, OpenAPI y modelo de datos**
   - Test: `packages/api/src/openapi.test.ts` actualizado con los nuevos endpoints (falla hasta documentarlos).
   - Código: mesas de ejemplo en `scripts/seed.ts` para `rest-1` y `rest-2`; endpoints y esquemas en `docs/api/openapi.json`; tabla `restaurant_tables` en `docs/dominio/modelo-datos.md`.
-- [ ] **8. web-admin: servicio y store de mesas**
+- [x] **8. web-admin: servicio y store de mesas**
   - Test: sin test automático; se verifica compilando (`ng build`).
   - Código: `features/tables/models/table.model.ts`, `services/table.service.ts` y `store/table.store.ts` (signals, loading y error, `firstValueFrom`) en `packages/web-admin`.
 - [ ] **9. web-admin: listado de mesas y enlace en el menú**
