@@ -168,3 +168,9 @@ export class ForbiddenItemStatusUpdateError extends AppError {
     super('Tu rol no puede modificar el estado de este item')
   }
 }
+
+export class InvalidPointsRuleError extends AppError {
+  constructor(message?: string) {
+    super(message ?? 'Invalid points rule')
+  }
+}

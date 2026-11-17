@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { OrderService } from './order.service.js'
+import { PointsService } from './points.service.js'
+import { MockPointsRepository } from '@repositories/mocks/MockPointsRepository.js'
 import { MockOrderRepository } from '@repositories/mocks/MockOrderRepository.js'
 import type { Order } from '@models/order.model.js'
 import { OrderNotFoundError, InvalidOrderStatusError, ForbiddenItemStatusUpdateError } from '@errors/DomainErrors.js'
@@ -107,5 +109,27 @@ describe('OrderService.updateItemStatus - permisos por rol', () => {
     it('un cliente no puede modificar items', async () => {
         await expect(service.updateItemStatus('order-1', 'plato', 'entregado', 'cliente'))
             .rejects.toThrow(ForbiddenItemStatusUpdateError)
+    })
+})
+
+describe('OrderService.updateItemStatus - puntos', () => {
+    it('da puntos al cliente cuando se entrega el último item del pedido', async () => {
+        const repo = new MockOrderRepository()
+        const points = new PointsService(new MockPointsRepository())
+        const service = new OrderService(repo, points)
+        await points.setRule('rest-1', 5, 1)
+        await repo.create({
+            id: 'o1', restaurantId: 'rest-1', tableId: null, clientId: 'cliente-1', createdAt: new Date(),
+            items: [
+                { id: 'a', dishId: 'd1', quantity: 1, notes: null, status: 'entregado', dishPrice: 10, dishCategory: 'principal' },
+                { id: 'b', dishId: 'd2', quantity: 1, notes: null, status: 'listo', dishPrice: 10, dishCategory: 'principal' }
+            ]
+        })
+
+        await service.updateItemStatus('o1', 'a', 'entregado', 'camarero')
+        expect(await points.getBalance('cliente-1', 'rest-1')).toBe(0)
+
+        await service.updateItemStatus('o1', 'b', 'entregado', 'camarero')
+        expect(await points.getBalance('cliente-1', 'rest-1')).toBe(4)
     })
 })

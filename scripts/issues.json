@@ -44,7 +44,8 @@
     "title": "Implementar sistema de puntos",
     "type": "feature",
     "projects": ["api"],
-    "body": "Implementar un sistema de puntos para los clientes. Por cada X€ gastados se llevan Y puntos."
+    "body": "Implementar un sistema de puntos para los clientes. Por cada X€ gastados se llevan Y puntos.",
+    "corregido": "si"
   },
   {
     "title": "Códigos de descuentos",

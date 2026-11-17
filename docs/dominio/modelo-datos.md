@@ -215,6 +215,33 @@ Líneas de pedido. Cada ítem es un plato con cantidad y estado.
 
 ---
 
+## points_rules
+
+Regla de puntos de un restaurante: por cada `euros_per_block` € gastados el cliente gana `points_per_block` puntos. Si un restaurante no tiene fila se aplica la regla por defecto (1 punto por cada 10 €).
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `restaurant_id` | TEXT | No | PK, FK a `restaurants.id` |
+| `euros_per_block` | REAL | No | Euros por bloque (X) |
+| `points_per_block` | INTEGER | No | Puntos por bloque (Y) |
+
+## points_transactions
+
+Puntos ganados por los clientes. El saldo es la suma de `points` por cliente y restaurante.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `client_id` | TEXT | No | Cliente que gana los puntos |
+| `restaurant_id` | TEXT | No | FK a `restaurants.id` |
+| `order_id` | TEXT | No | Pedido que los generó. `UNIQUE`: un pedido da puntos una sola vez |
+| `points` | INTEGER | No | Puntos ganados |
+| `created_at` | TEXT | No | Fecha ISO 8601 |
+
+Los puntos se conceden cuando todos los ítems del pedido quedan en estado `entregado` y el pedido tiene cliente.
+
+---
+
 ## Relaciones
 
 | Relación | Tipo | Descripción |
@@ -226,6 +253,7 @@ Líneas de pedido. Cada ítem es un plato con cantidad y estado.
 | Dish ↔ Ingredient | N:M | Un plato usa varios ingredientes (via `dish_ingredients`) |
 | Order → OrderItems | 1:N | Un pedido tiene varios ítems |
 | Dish → OrderItems | 1:N | Un plato puede estar en varios ítems de pedido |
+| Restaurant → PointsRule | 1:1 | Un restaurante tiene como mucho una regla de puntos |
 
 ---
 

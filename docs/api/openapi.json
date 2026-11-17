@@ -31,6 +31,9 @@
       "name": "Pedidos"
     },
     {
+      "name": "Puntos"
+    },
+    {
       "name": "Público"
     }
   ],
@@ -1356,6 +1359,195 @@
         ]
       }
     },
+    "/restaurants/{restaurantId}/points-rule": {
+      "get": {
+        "tags": [
+          "Puntos"
+        ],
+        "summary": "Consultar la regla de puntos de un restaurante",
+        "description": "Si el restaurante no ha configurado ninguna se aplica la regla por defecto: 1 punto por cada 10 €.\n\n**Roles permitidos:** admin, manager.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Regla de puntos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PointsRule"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El rol del usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Puntos"
+        ],
+        "summary": "Configurar la regla de puntos de un restaurante",
+        "description": "Por cada `eurosPerBlock` € gastados el cliente gana `pointsPerBlock` puntos. Los puntos se dan cuando el pedido queda totalmente entregado.\n\n**Roles permitidos:** admin.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PointsRuleInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Regla actualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PointsRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El rol del usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/points/mine": {
+      "get": {
+        "tags": [
+          "Puntos"
+        ],
+        "summary": "Consultar mis puntos en un restaurante",
+        "description": "Saldo de puntos del usuario autenticado.",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "query",
+            "required": true,
+            "description": "Identificador del restaurante",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saldo de puntos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PointsBalance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Falta restaurantId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o caducado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/public/restaurants": {
       "get": {
         "tags": [
@@ -2266,6 +2458,50 @@
           "restaurantId",
           "items"
         ]
+      },
+      "PointsRuleInput": {
+        "type": "object",
+        "properties": {
+          "eurosPerBlock": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "example": 10
+          },
+          "pointsPerBlock": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          }
+        },
+        "required": [
+          "eurosPerBlock",
+          "pointsPerBlock"
+        ]
+      },
+      "PointsRule": {
+        "type": "object",
+        "properties": {
+          "restaurantId": {
+            "type": "string"
+          },
+          "eurosPerBlock": {
+            "type": "number"
+          },
+          "pointsPerBlock": {
+            "type": "integer"
+          }
+        }
+      },
+      "PointsBalance": {
+        "type": "object",
+        "properties": {
+          "restaurantId": {
+            "type": "string"
+          },
+          "points": {
+            "type": "integer"
+          }
+        }
       },
       "UpdateItemStatus": {
         "type": "object",

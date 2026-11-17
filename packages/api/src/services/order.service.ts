@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto'
 import type { Order, OrderItem } from '@models/order.model.js'
-import { normalizeOrderStatus, canRoleUpdateItemStatus } from '@models/order.model.js'
+import { normalizeOrderStatus, canRoleUpdateItemStatus, isOrderFullyDelivered } from '@models/order.model.js'
+import type { PointsService } from '@services/points.service.js'
 import type { OrderRepository } from '@repositories/order.repository.js'
 import { RestaurantIdRequiredError, OrderNotFoundError, ForbiddenItemStatusUpdateError } from '@errors/DomainErrors.js'
 
@@ -16,7 +17,10 @@ export interface CreateOrderRequest {
 }
 
 export class OrderService {
-    constructor(private readonly orderRepository: OrderRepository) {}
+    constructor(
+        private readonly orderRepository: OrderRepository,
+        private readonly pointsService?: PointsService
+    ) {}
 
     async create(request: CreateOrderRequest): Promise<Order> {
         if (!request.restaurantId || request.restaurantId.trim() === '') {
@@ -85,5 +89,10 @@ export class OrderService {
         item.status = normalizedStatus
 
         await this.orderRepository.updateItemStatus(orderId, itemId, normalizedStatus)
+
+        // Al entregarse el último item el cliente gana los puntos del pedido
+        if (this.pointsService && isOrderFullyDelivered(order)) {
+            await this.pointsService.awardForOrder(order)
+        }
     }
 }
