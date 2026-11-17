@@ -4,6 +4,8 @@ export interface OrderItem {
   quantity: number
   notes: string | null
   status: string
+  /** Pack al que pertenece el item, si se pidió dentro de un pack */
+  orderPackId?: string | null
   dishName?: string
   dishPrice?: number
 }
@@ -17,4 +19,12 @@ export interface Order {
   clientId: string | null
   createdAt: string
   items: OrderItem[]
+  packs?: OrderPack[]
+}
+
+export interface OrderPack {
+  id: string
+  packId: string
+  name: string
+  price: number
 }

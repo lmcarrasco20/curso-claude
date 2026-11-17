@@ -14,7 +14,7 @@ import { OrderService } from '../../core/services/order.service'
         <h1>Tu pedido</h1>
       </div>
 
-      @if (cartStore.items().length === 0) {
+      @if (cartStore.isEmpty()) {
         <div class="empty-state card">
           <p>Tu carrito está vacío</p>
           <a routerLink="/restaurants" class="btn btn-primary" style="margin-top: 16px;">
@@ -38,6 +38,28 @@ import { OrderService } from '../../core/services/order.service'
                   </div>
                   <span class="item-subtotal">{{ item.dish.price * item.quantity | number:'1.2-2' }} €</span>
                   <button class="btn btn-danger btn-sm" (click)="remove(item.dish.id)">Eliminar</button>
+                </div>
+              </div>
+            }
+            @for (line of cartStore.packs(); track line.id) {
+              <div class="cart-item card">
+                <div class="item-info">
+                  <h3>Pack {{ line.pack.name }}</h3>
+                  <ul class="pack-dishes">
+                    @for (selection of line.selections; track selection.slotId) {
+                      <li>{{ selection.dishName }}</li>
+                    }
+                  </ul>
+                  <p class="item-price">{{ line.pack.price | number:'1.2-2' }} € / pack</p>
+                </div>
+                <div class="item-controls">
+                  <div class="quantity-selector">
+                    <button class="qty-btn" (click)="cartStore.updatePackQuantity(line.id, line.quantity - 1)" [attr.aria-label]="'Quitar un pack ' + line.pack.name">-</button>
+                    <span>{{ line.quantity }}</span>
+                    <button class="qty-btn" (click)="cartStore.updatePackQuantity(line.id, line.quantity + 1)" [attr.aria-label]="'Añadir un pack ' + line.pack.name">+</button>
+                  </div>
+                  <span class="item-subtotal">{{ line.pack.price * line.quantity | number:'1.2-2' }} €</span>
+                  <button class="btn btn-danger btn-sm" (click)="cartStore.removePack(line.id)">Eliminar</button>
                 </div>
               </div>
             }
@@ -75,6 +97,11 @@ import { OrderService } from '../../core/services/order.service'
     </div>
   `,
   styles: [`
+    .pack-dishes {
+      margin: 4px 0 6px 18px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
     .table-info {
       color: var(--text-secondary);
       font-size: 14px;
@@ -204,7 +231,7 @@ export class CartComponent {
 
   confirmOrder(): void {
     const restaurantId = this.cartStore.restaurantId()
-    if (!restaurantId || this.cartStore.items().length === 0) return
+    if (!restaurantId || this.cartStore.isEmpty()) return
 
     this.loading.set(true)
     this.error.set(null)
@@ -218,7 +245,13 @@ export class CartComponent {
     const table = this.cartStore.table()
     const tableId = table && table.restaurantId === restaurantId ? table.id : null
 
-    this.orderService.createOrder(restaurantId, items, tableId).subscribe({
+    const packs = this.cartStore.packs().map(line => ({
+      packId: line.pack.id,
+      quantity: line.quantity,
+      selections: line.selections.map(s => ({ slotId: s.slotId, dishId: s.dishId }))
+    }))
+
+    this.orderService.createOrder(restaurantId, items, tableId, packs).subscribe({
       next: (order) => {
         this.cartStore.clear()
         this.router.navigate(['/orders', order.id])

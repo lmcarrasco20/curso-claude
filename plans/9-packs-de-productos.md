@@ -77,7 +77,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **12. web-clientes: packs en la carta**
   - Test: sin test automático; `ng build` y comprobación en el navegador.
   - Código: `core/models/pack.model.ts`, `core/services/pack.service.ts` y sección "Packs" en `restaurant-menu.component.ts` con nombre, precio y composición de cada pack.
-- [ ] **13. web-clientes: elegir y pedir un pack**
+- [x] **13. web-clientes: elegir y pedir un pack**
   - Test: sin test automático; `ng build` y prueba de extremo a extremo (pedido con pack visible en cocina y barra, y con el total correcto).
   - Código: diálogo de selección de platos por hueco (solo platos permitidos), `CartStore` con líneas de pack, carrito que las muestra con su precio y `OrderService.createOrder` enviando `packs`; el detalle de pedido agrupa los platos del pack.
 

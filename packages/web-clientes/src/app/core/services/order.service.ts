@@ -9,11 +9,17 @@ export class OrderService {
   private readonly http = inject(HttpClient)
   private readonly apiUrl = inject(API_URL)
 
-  createOrder(restaurantId: string, items: { dishId: string; quantity: number; notes: string | null }[], tableId: string | null = null): Observable<Order> {
+  createOrder(
+    restaurantId: string,
+    items: { dishId: string; quantity: number; notes: string | null }[],
+    tableId: string | null = null,
+    packs: { packId: string; quantity: number; selections: { slotId: string; dishId: string }[] }[] = []
+  ): Observable<Order> {
     return this.http.post<Order>(`${this.apiUrl}/orders`, {
       restaurantId,
       tableId,
-      items
+      items,
+      packs
     })
   }
 

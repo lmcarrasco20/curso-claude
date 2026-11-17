@@ -1,18 +1,20 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { DecimalPipe } from '@angular/common'
+import { FormsModule } from '@angular/forms'
 import { LucideAngularModule } from 'lucide-angular'
 import { DishService } from '../../core/services/dish.service'
 import { PackService } from '../../core/services/pack.service'
 import { Pack, SLOT_CATEGORY_LABELS } from '../../core/models/pack.model'
 import { RestaurantService } from '../../core/services/restaurant.service'
 import { CartStore, Dish } from '../../core/store/cart.store'
+import { PackSlot } from '../../core/models/pack.model'
 import { Restaurant } from '../../core/models/restaurant.model'
 
 @Component({
   selector: 'app-restaurant-menu',
   standalone: true,
-  imports: [RouterLink, LucideAngularModule, DecimalPipe],
+  imports: [RouterLink, FormsModule, LucideAngularModule, DecimalPipe],
   template: `
     <div class="container">
       <div class="page-header">
@@ -46,7 +48,39 @@ import { Restaurant } from '../../core/models/restaurant.model'
                         <p class="pack-composition">{{ packComposition(pack) }}</p>
                         <p class="dish-price">{{ pack.price | number:'1.2-2' }} €</p>
                       </div>
+                      <div class="dish-actions">
+                        <button
+                          type="button"
+                          class="btn btn-primary btn-sm"
+                          [attr.aria-expanded]="openPackId() === pack.id"
+                          [attr.aria-controls]="'pack-panel-' + pack.id"
+                          (click)="togglePack(pack)"
+                        >
+                          {{ openPackId() === pack.id ? 'Cerrar' : 'Elegir platos' }}
+                        </button>
+                      </div>
                     </div>
+                    @if (openPackId() === pack.id) {
+                      <form class="pack-panel card" [id]="'pack-panel-' + pack.id" (ngSubmit)="addPackToCart(pack)" novalidate>
+                        <p class="pack-panel-title">Elige un plato para cada parte de {{ pack.name }}</p>
+                        @for (slot of pack.slots; track slot.id; let i = $index) {
+                          <div class="pack-slot">
+                            <label [for]="'slot-' + slot.id">{{ slotLabel(pack.slots, i) }}</label>
+                            <select
+                              [id]="'slot-' + slot.id"
+                              class="form-control"
+                              (change)="choose(slot.id, $any($event.target).value)"
+                            >
+                              <option value="">Elige un plato</option>
+                              @for (dish of allowedDishes(slot); track dish.id) {
+                                <option [value]="dish.id" [selected]="packChoices()[slot.id] === dish.id">{{ dish.name }}</option>
+                              }
+                            </select>
+                          </div>
+                        }
+                        <button type="submit" class="btn btn-primary" [disabled]="!canAddPack(pack)">Añadir al pedido</button>
+                      </form>
+                    }
                   }
                 </div>
               </div>
@@ -84,7 +118,7 @@ import { Restaurant } from '../../core/models/restaurant.model'
 
           <aside class="cart-summary card">
             <h3>Tu pedido</h3>
-            @if (cartStore.items().length === 0) {
+            @if (cartStore.isEmpty()) {
               <p class="empty-cart">Tu carrito está vacío</p>
             } @else {
               <div class="cart-items">
@@ -92,6 +126,12 @@ import { Restaurant } from '../../core/models/restaurant.model'
                   <div class="cart-item">
                     <span class="item-name">{{ item.dish.name }} x{{ item.quantity }}</span>
                     <span class="item-price">{{ item.dish.price * item.quantity | number:'1.2-2' }} €</span>
+                  </div>
+                }
+                @for (line of cartStore.packs(); track line.id) {
+                  <div class="cart-item">
+                    <span class="item-name">Pack {{ line.pack.name }} x{{ line.quantity }}</span>
+                    <span class="item-price">{{ line.pack.price * line.quantity | number:'1.2-2' }} €</span>
                   </div>
                 }
               </div>
@@ -116,6 +156,26 @@ import { Restaurant } from '../../core/models/restaurant.model'
     .table-info {
       color: var(--text-secondary);
       font-size: 14px;
+    }
+    .pack-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 20px;
+      margin-top: -4px;
+      border-color: var(--green-medium);
+    }
+    .pack-panel-title {
+      font-weight: 600;
+    }
+    .pack-slot {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pack-slot label {
+      font-size: 13px;
+      color: var(--text-secondary);
     }
     .pack-composition {
       color: var(--text-secondary);
@@ -279,6 +339,46 @@ export class RestaurantMenuComponent implements OnInit {
   }
 
   readonly packs = signal<Pack[]>([])
+  readonly openPackId = signal<string | null>(null)
+  readonly packChoices = signal<Record<string, string>>({})
+
+  togglePack(pack: Pack): void {
+    this.packChoices.set({})
+    this.openPackId.update(current => (current === pack.id ? null : pack.id))
+  }
+
+  /** Platos que se pueden elegir en un hueco: de su categoría, disponibles y no bloqueados */
+  allowedDishes(slot: PackSlot): Dish[] {
+    return this.dishes().filter(d => d.category === slot.category && d.available && !slot.excludedDishIds.includes(d.id))
+  }
+
+  slotLabel(slots: PackSlot[], index: number): string {
+    const slot = slots[index]!
+    const label = SLOT_CATEGORY_LABELS[slot.category] ?? slot.category
+    const sameCategory = slots.filter(s => s.category === slot.category)
+    return sameCategory.length > 1 ? `${label} ${sameCategory.indexOf(slot) + 1}` : label
+  }
+
+  choose(slotId: string, dishId: string): void {
+    this.packChoices.update(choices => ({ ...choices, [slotId]: dishId }))
+  }
+
+  canAddPack(pack: Pack): boolean {
+    const choices = this.packChoices()
+    return pack.slots.every(slot => !!choices[slot.id])
+  }
+
+  addPackToCart(pack: Pack): void {
+    if (!this.canAddPack(pack)) return
+    const choices = this.packChoices()
+    const selections = pack.slots.map(slot => {
+      const dish = this.dishes().find(d => d.id === choices[slot.id])!
+      return { slotId: slot.id, dishId: dish.id, dishName: dish.name }
+    })
+    this.cartStore.addPack(pack, selections)
+    this.packChoices.set({})
+    this.openPackId.set(null)
+  }
 
   packComposition(pack: Pack): string {
     return pack.slots.map(slot => SLOT_CATEGORY_LABELS[slot.category] ?? slot.category).join(' + ')

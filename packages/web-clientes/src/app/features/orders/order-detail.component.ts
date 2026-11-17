@@ -56,6 +56,26 @@ import { BillRequestComponent } from './bill-request.component'
                 </div>
               </div>
             }
+            @for (pack of packGroups(); track pack.id) {
+              <div class="ticket-item">
+                <div class="item-main">
+                  <span class="item-qty">1x</span>
+                  <span class="item-name">Pack {{ pack.name }}</span>
+                </div>
+                <ul class="pack-dishes">
+                  @for (it of pack.items; track it.id) {
+                    <li>
+                      <span>{{ it.dishName || 'Plato' }}</span>
+                      <span class="status-badge" [ngClass]="getStatusClass(getStatusString(it.status))">{{ getStatusLabel(getStatusString(it.status)) }}</span>
+                    </li>
+                  }
+                </ul>
+                <div class="item-status">
+                  <span></span>
+                  <span class="item-price">{{ pack.price | number:'1.2-2' }} €</span>
+                </div>
+              </div>
+            }
           </div>
 
           <div class="ticket-divider"></div>
@@ -164,6 +184,21 @@ import { BillRequestComponent } from './bill-request.component'
       background: rgba(139, 146, 168, 0.1);
       color: var(--text-secondary);
     }
+    .pack-dishes {
+      list-style: none;
+      padding-left: 38px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .pack-dishes li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
     .item-price {
       color: var(--text-secondary);
       font-size: 13px;
@@ -214,7 +249,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   getTotal(): number {
     const o = this.order()
     if (!o) return 0
-    return o.items.reduce((sum, item) => sum + (item.dishPrice || 0) * item.quantity, 0)
+    // Los platos de un pack no suman su precio: el pack tiene precio cerrado
+    const items = o.items.filter(item => !item.orderPackId).reduce((sum, item) => sum + (item.dishPrice || 0) * item.quantity, 0)
+    const packs = (o.packs ?? []).reduce((sum, pack) => sum + pack.price, 0)
+    return items + packs
   }
 
   getStatusLabel(status: string): string {
@@ -238,8 +276,18 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     return status?.value || 'pendiente'
   }
 
+  /** Packs del pedido con los platos que los componen */
+  packGroups = computed(() => {
+    const order = this.order()
+    if (!order) return []
+    return (order.packs ?? []).map(pack => ({
+      ...pack,
+      items: order.items.filter(item => item.orderPackId === pack.id)
+    }))
+  })
+
   groupedItems = computed(() => {
-    const items = this.order()?.items || []
+    const items = (this.order()?.items || []).filter(item => !item.orderPackId)
     const groups = new Map<string, { dishId: string; dishName: string; dishPrice: number; statusCounts: { status: string; count: number }[] }>()
 
     for (const item of items) {
