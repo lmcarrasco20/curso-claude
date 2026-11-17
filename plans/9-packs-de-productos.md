@@ -50,7 +50,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **3. Servicio de packs**
   - Test: `packages/api/src/services/pack.service.test.ts` con mock: crear, listar, obtener (404), actualizar, eliminar y listar solo los disponibles de un restaurante.
   - Código: `packages/api/src/services/pack.service.ts`.
-- [ ] **4. Validar la elección del cliente**
+- [x] **4. Validar la elección del cliente**
   - Test: `packages/api/src/models/pack-selection.test.ts`: `validatePackSelection` acepta una elección por hueco con platos de la categoría correcta, disponibles y del mismo restaurante; rechaza huecos sin elegir, huecos repetidos, categoría equivocada, plato bloqueado y plato no disponible.
   - Código: función `validatePackSelection` en `models/pack.model.ts` y error `InvalidPackSelectionError`.
 - [ ] **5. Crear pedidos con packs**

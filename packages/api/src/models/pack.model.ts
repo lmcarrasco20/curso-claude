@@ -1,4 +1,4 @@
-import { InvalidCategoryError, InvalidPackError } from '@errors/DomainErrors.js'
+import { InvalidCategoryError, InvalidPackError, InvalidPackSelectionError } from '@errors/DomainErrors.js'
 import type { DishCategoryType } from '@models/dish.model.js'
 import { normalizeDishCategory } from '@models/dish.model.js'
 
@@ -71,4 +71,61 @@ export function validatePackInput(input: PackInput): ValidPackInput {
         available: input.available ?? true,
         slots
     }
+}
+
+export interface PackSelection {
+    slotId: string
+    dishId: string
+}
+
+/** Datos de un plato necesarios para validar una elección */
+export interface SelectableDish {
+    id: string
+    category: string
+    available: boolean
+    restaurantId: string
+}
+
+/**
+ * Comprueba que el cliente ha elegido exactamente un plato por hueco y que cada plato es válido:
+ * del mismo restaurante, disponible, de la categoría del hueco y no bloqueado.
+ */
+export function validatePackSelection(pack: Pack, selections: PackSelection[], dishes: SelectableDish[]): PackSelection[] {
+    if (!pack.available) {
+        throw new InvalidPackSelectionError('El pack no está disponible')
+    }
+
+    const slotIds = new Set(pack.slots.map(s => s.id))
+    const chosenSlots = new Set<string>()
+    for (const selection of selections) {
+        if (!slotIds.has(selection.slotId)) {
+            throw new InvalidPackSelectionError('La elección incluye un hueco que no pertenece al pack')
+        }
+        if (chosenSlots.has(selection.slotId)) {
+            throw new InvalidPackSelectionError('Cada hueco del pack solo admite una elección')
+        }
+        chosenSlots.add(selection.slotId)
+    }
+    if (chosenSlots.size !== pack.slots.length) {
+        throw new InvalidPackSelectionError('Debes elegir un plato para cada hueco del pack')
+    }
+
+    for (const selection of selections) {
+        const slot = pack.slots.find(s => s.id === selection.slotId)!
+        const dish = dishes.find(d => d.id === selection.dishId)
+        if (!dish || dish.restaurantId !== pack.restaurantId) {
+            throw new InvalidPackSelectionError('El plato elegido no existe en este restaurante')
+        }
+        if (!dish.available) {
+            throw new InvalidPackSelectionError('El plato elegido no está disponible')
+        }
+        if (dish.category !== slot.category) {
+            throw new InvalidPackSelectionError(`El plato elegido no es de la categoría ${slot.category}`)
+        }
+        if (slot.excludedDishIds.includes(dish.id)) {
+            throw new InvalidPackSelectionError('El plato elegido no se puede elegir en este pack')
+        }
+    }
+
+    return selections.map(s => ({ slotId: s.slotId, dishId: s.dishId }))
 }
