@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from '@resttek/web-shared';
 import { ShellComponent } from './core/layout/shell.component';
-import { authGuard } from '@resttek/web-shared';
+import { authGuard, roleGuard } from '@resttek/web-shared';
 
 export const routes: Routes = [
   {
@@ -21,14 +21,17 @@ export const routes: Routes = [
       {
         path: 'cocina',
         loadComponent: () => import('./features/orders/pages/cocina/cocina.component').then(m => m.CocinaComponent),
+        canActivate: [roleGuard(['cocinero', 'manager'])],
       },
       {
         path: 'barra',
         loadComponent: () => import('./features/orders/pages/barra/barra.component').then(m => m.BarraComponent),
+        canActivate: [roleGuard(['camarero', 'manager'])],
       },
       {
         path: 'salon',
         loadComponent: () => import('./features/orders/pages/salon/salon.component').then(m => m.SalonComponent),
+        canActivate: [roleGuard(['camarero', 'manager'])],
       }
     ]
   },
