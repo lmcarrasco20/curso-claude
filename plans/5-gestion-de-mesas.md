@@ -77,7 +77,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **11. web-empleados: página de mesas**
   - Test: sin test automático; `ng build` y prueba con camarero y gerente.
   - Código: `features/tables/` (modelo, servicio, store con sondeo cada 30 s, como `OrderStore`) y `pages/mesas/mesas.component.*` con las mesas, un selector para cambiar su estado y, en las ocupadas, los pedidos activos con el estado de cada item; ruta `mesas` con `roleGuard(['camarero', 'manager'])` y enlace en el menú. Las pantallas de cocina, barra y salón pasan a mostrar `tableNumber`.
-- [ ] **12. web-clientes: elegir mesa antes de la carta**
+- [x] **12. web-clientes: elegir mesa antes de la carta**
   - Test: sin test automático; `ng build` y prueba del flujo completo.
   - Código: `core/models/table.model.ts`, `core/services/table.service.ts` y `features/tables/table-selection.component.ts` (comensales, mesas disponibles, elegir y continuar); `RestaurantListComponent` enlaza a `/restaurants/:id/tables`; ruta nueva en `app.routes.ts`.
 - [ ] **13. web-clientes: pedido con la mesa elegida**
