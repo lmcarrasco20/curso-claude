@@ -19,7 +19,10 @@ import {
     InvalidDiscountError,
     InvalidDiscountCodeError,
     InvalidPointsRewardError,
-    InsufficientPointsError
+    InsufficientPointsError,
+    PackNotFoundError,
+    InvalidPackError,
+    InvalidPackSelectionError
 } from '@errors/DomainErrors.js'
 
 const handle = (error: unknown): { status: number; body: any } => {
@@ -79,4 +82,12 @@ describe('errorHandler', () => {
             expect(handle(error).status).toBe(400)
         }
     )
+
+    it('devuelve 404 si el pack no existe', () => {
+        expect(handle(new PackNotFoundError()).status).toBe(404)
+    })
+
+    it.each([new InvalidPackError(), new InvalidPackSelectionError()])('devuelve 400 para %s', error => {
+        expect(handle(error).status).toBe(400)
+    })
 })

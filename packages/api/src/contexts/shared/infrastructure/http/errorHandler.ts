@@ -10,7 +10,8 @@ const NOT_FOUND_ERRORS = [
     'DiscountCodeNotFoundError',
     'PointsRewardNotFoundError',
     'BillNotFoundError',
-    'OrderNotFoundError'
+    'OrderNotFoundError',
+    'PackNotFoundError'
 ]
 
 const CONFLICT_ERRORS = [

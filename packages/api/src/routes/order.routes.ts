@@ -11,12 +11,20 @@ import { PointsRewardService } from '@services/points-reward.service.js'
 import { SqliteBillRepository } from '@repositories/bill.repository.js'
 import { SqliteDiscountRepository } from '@repositories/discount.repository.js'
 import { SqlitePointsRewardRepository } from '@repositories/points-reward.repository.js'
+import { PackService } from '@services/pack.service.js'
+import { SqlitePackRepository } from '@repositories/pack.repository.js'
+import { SqliteDishRepository } from '@repositories/dish.repository.js'
 import { dbConfig } from '@config/database.js'
 import { authenticate } from '@shared/infrastructure/http/middlewares.js'
 
 const orderRepository = new SqliteOrderRepository(dbConfig)
 const pointsService = new PointsService(new SqlitePointsRepository(dbConfig))
-const orderService = new OrderService(orderRepository, pointsService)
+const orderService = new OrderService(
+    orderRepository,
+    pointsService,
+    new PackService(new SqlitePackRepository(dbConfig)),
+    new SqliteDishRepository(dbConfig)
+)
 const orderController = new OrderController(orderService)
 const billController = new BillController(new BillService(
     orderRepository,

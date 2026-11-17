@@ -62,7 +62,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **7. Total del pedido con packs**
   - Test: ampliar `points.model.test.ts`: `calculateOrderTotal` cuenta el precio de cada pack una vez y no suma el precio de los platos que pertenecen a un pack.
   - Código: `calculateOrderTotal` en `models/points.model.ts`.
-- [ ] **8. Controllers, rutas y errores**
+- [x] **8. Controllers, rutas y errores**
   - Test: ampliar `errorHandler.test.ts` con los códigos HTTP de los errores nuevos y verificar el flujo con la API en marcha (crear pack, listarlo público, pedirlo).
   - Código: `controllers/pack.controller.ts` y `routes/pack.routes.ts` (CRUD `admin` y `manager`), listado público en `/public/restaurants/:restaurantId/packs`, cuerpo del pedido con `packs` en `OrderController`, cableado en `app.ts` y `order.routes.ts`.
 - [ ] **9. Seed, OpenAPI y modelo de datos**
