@@ -69,7 +69,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **9. Controllers y rutas**
   - Test: ampliar `errorHandler.test.ts` con los códigos HTTP de los errores nuevos (404, 409, 403 y 400) y verificar el flujo con la API en marcha.
   - Código: `controllers/discount.controller.ts`, `points-reward.controller.ts` y `bill.controller.ts`; rutas `/restaurants/:restaurantId/discount-codes` (admin y gerente), `/restaurants/:restaurantId/points-rewards` (CRUD admin; listado también para clientes) y `POST /orders/:id/bill`; cableado en `app.ts` y `order.routes.ts`.
-- [ ] **10. Seed, OpenAPI y modelo de datos**
+- [x] **10. Seed, OpenAPI y modelo de datos**
   - Test: `packages/api/src/openapi.test.ts` actualizado con los endpoints nuevos (falla hasta documentarlos).
   - Código: códigos y equivalencias de ejemplo en `scripts/seed.ts`, endpoints y esquemas en `docs/api/openapi.json` y tablas en `docs/dominio/modelo-datos.md`.
 - [ ] **11. web-admin: códigos de descuento (servicio, store y listado)**

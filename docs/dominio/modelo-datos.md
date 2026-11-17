@@ -13,6 +13,9 @@ erDiagram
     restaurants ||--o{ dishes : "tiene"
     restaurants ||--o{ orders : "tiene"
     restaurants ||--o{ restaurant_tables : "tiene"
+    restaurants ||--o{ discount_codes : "tiene"
+    restaurants ||--o{ points_rewards : "tiene"
+    orders ||--o| bills : "genera"
     restaurant_tables ||--o{ orders : "atiende"
     dishes ||--o{ dish_ingredients : "contiene"
     ingredients ||--o{ dish_ingredients : "usado en"
@@ -263,6 +266,69 @@ Los puntos se conceden cuando todos los ítems del pedido quedan en estado `entr
 
 ---
 
+## discount_codes
+
+Códigos de descuento que el cliente puede aplicar al pedir la cuenta.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `restaurant_id` | TEXT | No | FK a `restaurants.id` (ON DELETE CASCADE) |
+| `code` | TEXT | No | Código en mayúsculas. `UNIQUE(restaurant_id, code)` |
+| `type` | TEXT | No | `porcentaje` o `importe` |
+| `value` | REAL | No | Porcentaje (1-100) o euros, según el tipo |
+| `active` | INTEGER | No | 1 = se puede aplicar, 0 = desactivado |
+| `created_at` | TEXT | No | Fecha ISO 8601 |
+| `updated_at` | TEXT | No | Fecha ISO 8601 |
+
+## points_rewards
+
+Equivalencias definidas por el administrador entre puntos y euros de descuento (por ejemplo, 10 puntos = 1 €).
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `restaurant_id` | TEXT | No | FK a `restaurants.id` (ON DELETE CASCADE) |
+| `points` | INTEGER | No | Puntos que se canjean. `UNIQUE(restaurant_id, points)` |
+| `discount` | REAL | No | Descuento en euros |
+| `created_at` | TEXT | No | Fecha ISO 8601 |
+| `updated_at` | TEXT | No | Fecha ISO 8601 |
+
+## points_redemptions
+
+Puntos canjeados por los clientes. El saldo de un cliente es la suma de `points_transactions` menos la suma de `points_redemptions`.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `client_id` | TEXT | No | Cliente que canjea |
+| `restaurant_id` | TEXT | No | FK a `restaurants.id` |
+| `order_id` | TEXT | No | Pedido en el que se canjea. `UNIQUE`: un pedido canjea puntos una sola vez |
+| `points` | INTEGER | No | Puntos canjeados |
+| `created_at` | TEXT | No | Fecha ISO 8601 |
+
+## bills
+
+Cuenta de un pedido, calculada al pedirla. Se guarda una sola por pedido.
+
+| Columna | Tipo | Nulo | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | PK (UUID) |
+| `order_id` | TEXT | No | Pedido. `UNIQUE` |
+| `client_id` | TEXT | No | Cliente dueño del pedido |
+| `restaurant_id` | TEXT | No | FK a `restaurants.id` |
+| `discount_code` | TEXT | Sí | Código de descuento aplicado |
+| `subtotal` | REAL | No | Importe de los platos sin descuentos |
+| `code_discount` | REAL | No | Descuento del código (€) |
+| `points_used` | INTEGER | No | Puntos canjeados |
+| `points_discount` | REAL | No | Descuento por puntos (€) |
+| `total` | REAL | No | Importe final, nunca negativo |
+| `created_at` | TEXT | No | Fecha ISO 8601 |
+
+El código se aplica primero y el canje de puntos después, sobre el importe restante.
+
+---
+
 ## Relaciones
 
 | Relación | Tipo | Descripción |
@@ -277,6 +343,9 @@ Los puntos se conceden cuando todos los ítems del pedido quedan en estado `entr
 | Order → OrderItems | 1:N | Un pedido tiene varios ítems |
 | Dish → OrderItems | 1:N | Un plato puede estar en varios ítems de pedido |
 | Restaurant → PointsRule | 1:1 | Un restaurante tiene como mucho una regla de puntos |
+| Restaurant → DiscountCodes | 1:N | Un restaurante tiene muchos códigos de descuento |
+| Restaurant → PointsRewards | 1:N | Un restaurante tiene varias equivalencias de puntos |
+| Order → Bill | 1:1 | Un pedido tiene como mucho una cuenta |
 
 ---
 

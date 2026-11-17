@@ -40,6 +40,28 @@ const seed = async () => {
         }
         console.log('Tables created.')
 
+        const discountCodes = [
+            { restaurantId: 'rest-1', code: 'BIENVENIDA10', type: 'porcentaje', value: 10 },
+            { restaurantId: 'rest-2', code: 'NAPOLI5', type: 'importe', value: 5 }
+        ]
+        for (const discount of discountCodes) {
+            await dbConfig.run(`
+                INSERT INTO discount_codes (id, restaurant_id, code, type, value, active, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, 1, ?, ?)
+            `, [randomUUID(), discount.restaurantId, discount.code, discount.type, discount.value, new Date().toISOString(), new Date().toISOString()])
+        }
+        console.log('Discount codes created.')
+
+        for (const restaurantId of ['rest-1', 'rest-2']) {
+            for (const [points, discount] of [[10, 1], [50, 5], [100, 10]]) {
+                await dbConfig.run(`
+                    INSERT INTO points_rewards (id, restaurant_id, points, discount, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                `, [randomUUID(), restaurantId, points, discount, new Date().toISOString(), new Date().toISOString()])
+            }
+        }
+        console.log('Points rewards created.')
+
         const authService = new BcryptAuthService()
         const employeeRepo = new SqliteEmployeeRepository(dbConfig)
 
