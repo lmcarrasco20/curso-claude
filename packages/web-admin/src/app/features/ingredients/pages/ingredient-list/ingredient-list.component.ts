@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core'
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { ActivatedRoute, RouterLink } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { LucideAngularModule } from 'lucide-angular'
@@ -16,11 +17,16 @@ export class IngredientListComponent implements OnInit {
   private readonly route = inject(ActivatedRoute)
   restaurantId = ''
 
+  private readonly destroyRef = inject(DestroyRef)
+
   ngOnInit(): void {
-    this.restaurantId = this.route.parent?.snapshot.params['restaurantId'] ?? ''
-    if (this.restaurantId) {
-      this.store.loadByRestaurant(this.restaurantId)
-    }
+    // El componente se reutiliza al cambiar de restaurante, así que hay que escuchar el parámetro.
+    this.route.parent?.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      this.restaurantId = params.get('restaurantId') ?? ''
+      if (this.restaurantId) {
+        this.store.loadByRestaurant(this.restaurantId)
+      }
+    })
   }
 
   async onDelete(id: string): Promise<void> {
