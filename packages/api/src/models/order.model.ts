@@ -10,9 +10,19 @@ export interface OrderItem {
     quantity: number
     notes: string | null
     status: OrderStatusType
+    /** Pack al que pertenece el item, si se pidió dentro de un pack */
+    orderPackId?: string | null
     dishName?: string
     dishPrice?: number
     dishCategory?: string
+}
+
+/** Pack pedido: guarda el nombre y el precio del momento del pedido */
+export interface OrderPack {
+    id: string
+    packId: string
+    name: string
+    price: number
 }
 
 export interface Order {
@@ -24,6 +34,7 @@ export interface Order {
     clientId: string | null
     createdAt: Date
     items: OrderItem[]
+    packs?: OrderPack[]
     restaurantName?: string
     restaurantLogoUrl?: string | null
 }
