@@ -32,6 +32,10 @@ describe('SqliteOrderRepository (Integration)', () => {
             ['d1', 'Pizza', null, 12.5, 'principal', 1, 'r1', now, now]
         )
         await db.run(
+            'INSERT INTO dishes (id, name, description, price, category, available, restaurant_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            ['d2', 'Agua', null, 2, 'bebida', 1, 'r1', now, now]
+        )
+        await db.run(
             'INSERT INTO restaurant_tables (id, restaurant_id, number, description, capacity, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             ['t1', 'r1', 7, null, 4, 'ocupada', now, now]
         )
@@ -67,5 +71,47 @@ describe('SqliteOrderRepository (Integration)', () => {
         const order = await repo.findById('o-sin-mesa')
         expect(order?.tableId).toBeNull()
         expect(order?.tableNumber ?? null).toBeNull()
+    })
+
+    describe('packs', () => {
+        const buildPackOrder = (): Order => ({
+            id: 'o-pack',
+            restaurantId: 'r1',
+            tableId: null,
+            clientId: 'c-pack',
+            createdAt: new Date('2026-01-02T12:00:00.000Z'),
+            items: [
+                { id: 'ip1', dishId: 'd1', quantity: 1, notes: null, status: 'pendiente', orderPackId: 'op1' },
+                { id: 'ip2', dishId: 'd2', quantity: 1, notes: null, status: 'pendiente', orderPackId: 'op1' },
+                { id: 'ip3', dishId: 'd1', quantity: 1, notes: 'sin sal', status: 'pendiente' }
+            ],
+            packs: [{ id: 'op1', packId: 'pack-1', name: 'Menú del día', price: 15 }]
+        })
+
+        it('guarda y lee los packs del pedido con sus items marcados', async () => {
+            await repo.create(buildPackOrder())
+            const order = await repo.findById('o-pack')
+            expect(order?.packs).toEqual([{ id: 'op1', packId: 'pack-1', name: 'Menú del día', price: 15 }])
+            const byId = Object.fromEntries(order!.items.map(i => [i.id, i.orderPackId ?? null]))
+            expect(byId).toEqual({ ip1: 'op1', ip2: 'op1', ip3: null })
+        })
+
+        it('devuelve los packs en los pedidos activos y en los del cliente', async () => {
+            const active = await repo.findActiveByRestaurant('r1')
+            expect(active.find(o => o.id === 'o-pack')?.packs).toHaveLength(1)
+            const mine = await repo.findByClientId('c-pack')
+            expect(mine[0]?.packs?.[0]?.name).toBe('Menú del día')
+            expect(mine[0]?.items.filter(i => i.orderPackId === 'op1')).toHaveLength(2)
+        })
+
+        it('un pedido sin packs no tiene packs', async () => {
+            const order = await repo.findById('o-sin-mesa')
+            expect(order?.packs ?? []).toEqual([])
+        })
+
+        it('conserva el nombre y el precio del pack aunque el pack cambie después', async () => {
+            await db.run('DELETE FROM packs')
+            expect((await repo.findById('o-pack'))?.packs?.[0]).toMatchObject({ name: 'Menú del día', price: 15 })
+        })
     })
 })

@@ -1,5 +1,5 @@
 import { Database } from '@config/database.js'
-import type { Order, OrderItem } from '@models/order.model.js'
+import type { Order, OrderItem, OrderPack } from '@models/order.model.js'
 import { normalizeOrderStatus } from '@models/order.model.js'
 
 interface OrderRow {
@@ -25,7 +25,15 @@ interface OrderItemRow {
     status: string
 }
 
+interface OrderPackRow {
+    id: string
+    pack_id: string
+    name: string
+    price: number
+}
+
 interface OrderItemWithDishRow extends OrderItemRow {
+    order_pack_id: string | null
     dish_name: string
     dish_price: number
     dish_category: string
@@ -48,11 +56,24 @@ export class SqliteOrderRepository implements OrderRepository {
             [order.id, order.restaurantId, order.tableId, order.clientId, order.createdAt.toISOString()]
         )
 
+        for (const pack of order.packs ?? []) {
+            await this.db.run(
+                'INSERT INTO order_packs (id, order_id, pack_id, name, price) VALUES (?, ?, ?, ?, ?)',
+                [pack.id, order.id, pack.packId, pack.name, pack.price]
+            )
+        }
+
         for (const item of order.items) {
             await this.db.run(
                 'INSERT INTO order_items (id, order_id, dish_id, quantity, notes, status) VALUES (?, ?, ?, ?, ?, ?)',
                 [item.id, order.id, item.dishId, item.quantity, item.notes, item.status]
             )
+            if (item.orderPackId) {
+                await this.db.run(
+                    'INSERT INTO order_pack_items (order_item_id, order_pack_id) VALUES (?, ?)',
+                    [item.id, item.orderPackId]
+                )
+            }
         }
     }
 
@@ -77,6 +98,7 @@ export class SqliteOrderRepository implements OrderRepository {
             clientId: orderRow.client_id,
             createdAt: new Date(orderRow.created_at),
             items,
+            packs: await this.getOrderPacks(id),
             restaurantName: orderRow.restaurant_name,
             restaurantLogoUrl: orderRow.restaurant_logo_url
         }
@@ -110,7 +132,8 @@ export class SqliteOrderRepository implements OrderRepository {
                 tableNumber: row.table_number ?? null,
                 clientId: row.client_id,
                 createdAt: new Date(row.created_at),
-                items
+                items,
+                packs: await this.getOrderPacks(row.id)
             })
         }
 
@@ -139,6 +162,7 @@ export class SqliteOrderRepository implements OrderRepository {
                 clientId: row.client_id,
                 createdAt: new Date(row.created_at),
                 items,
+                packs: await this.getOrderPacks(row.id),
                 restaurantName: row.restaurant_name,
                 restaurantLogoUrl: row.restaurant_logo_url
             })
@@ -147,11 +171,17 @@ export class SqliteOrderRepository implements OrderRepository {
         return orders
     }
 
+    private async getOrderPacks(orderId: string): Promise<OrderPack[]> {
+        const rows = await this.db.all<OrderPackRow>('SELECT id, pack_id, name, price FROM order_packs WHERE order_id = ?', [orderId])
+        return rows.map(row => ({ id: row.id, packId: row.pack_id, name: row.name, price: row.price }))
+    }
+
     private async getOrderItems(orderId: string): Promise<OrderItem[]> {
         const itemRows = await this.db.all<OrderItemWithDishRow>(`
-            SELECT oi.*, d.name as dish_name, d.price as dish_price, d.category as dish_category
+            SELECT oi.*, d.name as dish_name, d.price as dish_price, d.category as dish_category, opi.order_pack_id as order_pack_id
             FROM order_items oi
             LEFT JOIN dishes d ON oi.dish_id = d.id
+            LEFT JOIN order_pack_items opi ON opi.order_item_id = oi.id
             WHERE oi.order_id = ?
         `, [orderId])
 
@@ -161,6 +191,7 @@ export class SqliteOrderRepository implements OrderRepository {
             quantity: row.quantity,
             notes: row.notes,
             status: normalizeOrderStatus(row.status),
+            orderPackId: row.order_pack_id,
             dishName: row.dish_name,
             dishPrice: row.dish_price,
             dishCategory: row.dish_category

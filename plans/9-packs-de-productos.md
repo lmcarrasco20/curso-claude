@@ -56,7 +56,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **5. Crear pedidos con packs**
   - Test: ampliar `order.service.test.ts`: un pedido con un pack genera un item por plato elegido (cada uno `pendiente`), registra el pack con su precio, `quantity: 2` crea dos packs y se rechaza un pack no disponible o con una elección inválida.
   - Código: `OrderService.create` acepta `packs: [{ packId, quantity, selections: [{ slotId, dishId }] }]`; el servicio recibe `PackService` y `DishService` como dependencias opcionales; modelo `OrderPack` en `order.model.ts`.
-- [ ] **6. Guardar y leer los packs de un pedido**
+- [x] **6. Guardar y leer los packs de un pedido**
   - Test: `packages/api/src/repositories/order.repository.test.ts` (base en memoria): un pedido con packs se guarda y se lee con `packs` e items marcados con `orderPackId`, tanto por id como en activos y por cliente.
   - Código: tablas `order_packs` y `order_pack_items` en `config/database.ts` y soporte en `SqliteOrderRepository` y `MockOrderRepository`.
 - [ ] **7. Total del pedido con packs**

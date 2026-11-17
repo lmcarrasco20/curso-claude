@@ -269,6 +269,22 @@ export class Database {
                 dish_id TEXT NOT NULL,
                 PRIMARY KEY(slot_id, dish_id),
                 FOREIGN KEY(slot_id) REFERENCES pack_slots(id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS order_packs (
+                id TEXT PRIMARY KEY,
+                order_id TEXT NOT NULL,
+                pack_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                price REAL NOT NULL,
+                FOREIGN KEY(order_id) REFERENCES orders(id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS order_pack_items (
+                order_item_id TEXT PRIMARY KEY,
+                order_pack_id TEXT NOT NULL,
+                FOREIGN KEY(order_item_id) REFERENCES order_items(id) ON DELETE CASCADE,
+                FOREIGN KEY(order_pack_id) REFERENCES order_packs(id) ON DELETE CASCADE
             )
         `.split(';')
 
