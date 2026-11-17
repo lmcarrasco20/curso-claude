@@ -53,7 +53,7 @@
     "type": "feature",
     "projects": ["api", "web-clientes", "web-admin"],
     "body": "CRUD para que un admin de un restaurante pueda generar códigos de descuentos que van a poder aplicar los clientes.\n\nLos clientes deberán poder añadir un código de descuento al pedir la cuenta.\n\nLos clientes que tengan puntos, podrán usarlos como descuentos al pedir la cuenta, el administrador es el que podrá crear la relación entre los puntos y el descuento (10 puntos = 1€ de descuento, 100 puntos = 10€ de descuento...).",
-    "corregido": "no"
+    "corregido": "si"
   },
   {
     "title": "Packs de productos",

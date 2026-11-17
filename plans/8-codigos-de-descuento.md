@@ -5,7 +5,7 @@
 - **Issue**: #8
 - **Título**: Códigos de descuentos
 - **Fecha**: 2026-11-17
-- **Estado**: borrador
+- **Estado**: implementado
 - **Rama sugerida**: `feature/8-codigos-de-descuento`
 
 ## Objetivo y alcance
@@ -87,15 +87,15 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 
 ## Criterios de aceptación
 
-- [ ] El administrador (y el gerente) crea, edita, lista y borra códigos de descuento de su restaurante; el código es único por restaurante y puede ser un porcentaje o un importe fijo.
-- [ ] El administrador define y edita equivalencias entre puntos y euros de descuento (por ejemplo, 10 puntos = 1 €, 100 puntos = 10 €).
-- [ ] Al pedir la cuenta, el cliente puede aplicar un código válido y/o canjear puntos; el total mostrado coincide con el calculado por la API y nunca es negativo.
-- [ ] Un código inexistente o inactivo se rechaza con un mensaje claro, y no se puede canjear más puntos de los que tiene el cliente.
-- [ ] Los puntos canjeados se descuentan del saldo del cliente una sola vez, y la cuenta de un pedido no se puede pedir dos veces.
-- [ ] Solo el cliente dueño del pedido puede pedir su cuenta.
-- [ ] El documento OpenAPI y el modelo de datos recogen los cambios.
-- [ ] Todas las tareas están completadas
-- [ ] `npm test` pasa en verde
+- [x] El administrador (y el gerente) crea, edita, lista y borra códigos de descuento de su restaurante; el código es único por restaurante y puede ser un porcentaje o un importe fijo.
+- [x] El administrador define y edita equivalencias entre puntos y euros de descuento (por ejemplo, 10 puntos = 1 €, 100 puntos = 10 €).
+- [x] Al pedir la cuenta, el cliente puede aplicar un código válido y/o canjear puntos; el total mostrado coincide con el calculado por la API y nunca es negativo.
+- [x] Un código inexistente o inactivo se rechaza con un mensaje claro, y no se puede canjear más puntos de los que tiene el cliente.
+- [x] Los puntos canjeados se descuentan del saldo del cliente una sola vez, y la cuenta de un pedido no se puede pedir dos veces.
+- [x] Solo el cliente dueño del pedido puede pedir su cuenta.
+- [x] El documento OpenAPI y el modelo de datos recogen los cambios.
+- [x] Todas las tareas están completadas
+- [x] `npm test` pasa en verde
 
 ## Dudas abiertas
 
@@ -110,3 +110,8 @@ Ninguna
 5. **Tablas nuevas en lugar de columnas nuevas** (`points_redemptions`, `bills`...) porque `CREATE TABLE IF NOT EXISTS` no altera bases ya creadas.
 6. **Quién gestiona qué**: códigos de descuento por `admin` y `manager`; equivalencias de puntos solo por `admin` (como la regla de puntos); los clientes solo las consultan.
 7. **Una cuenta por pedido**: una vez pedida no se puede cambiar, para evitar canjear puntos varias veces.
+8. **Desviación en los nombres de archivo**: las equivalencias de puntos se llaman `points-reward` en todo el módulo (modelo, repositorio, servicio, controller y rutas), no `points-redemption` como decía el plan, para reservar "redemption" al canje de puntos (`points_redemptions`).
+9. **Canje de puntos atómico**: la inserción del canje comprueba el saldo en la propia sentencia SQL, para que dos peticiones en paralelo no puedan gastar el mismo saldo.
+10. **Puntos proporcionales cuando el descuento queda limitado**: si el importe restante es menor que el descuento de la equivalencia, solo se gastan los puntos proporcionales, para no hacer perder puntos al cliente.
+11. **Orden de validación al pedir la cuenta**: primero se validan el código y la equivalencia y después se descuentan los puntos, de modo que un código erróneo no gasta puntos.
+12. **Consulta de la cuenta**: se añadió `GET /orders/:id/bill` (no estaba en el plan) para que el cliente vea su cuenta al volver a abrir el pedido.
