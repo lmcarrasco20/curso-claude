@@ -44,7 +44,7 @@ Cada tarea dura 5-10 minutos e incluye su test (TDD) y el código mínimo para q
 - [x] **1. Modelo de pack y validación**
   - Test: `packages/api/src/models/pack.model.test.ts`: `validatePackInput` exige nombre, precio mayor que 0 y al menos un hueco; cada hueco tiene una categoría válida; los platos bloqueados se limpian de duplicados.
   - Código: `packages/api/src/models/pack.model.ts` con las interfaces `Pack` y `PackSlot` y errores `InvalidPackError` y `PackNotFoundError` en `errors/DomainErrors.ts`.
-- [ ] **2. Repositorio de packs**
+- [x] **2. Repositorio de packs**
   - Test: `packages/api/src/repositories/pack.repository.test.ts` (base en memoria): guardar un pack con huecos y platos bloqueados, buscarlo por id con sus huecos, listar por restaurante, actualizar sustituyendo huecos y eliminar en cascada.
   - Código: tablas `packs`, `pack_slots` y `pack_slot_exclusions` en `config/database.ts`, `repositories/pack.repository.ts` (`PackRepository` y `SqlitePackRepository`) y `mocks/MockPackRepository.ts`.
 - [ ] **3. Servicio de packs**
