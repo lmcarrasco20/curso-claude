@@ -1,0 +1,71 @@
+<div class="fade-in">
+  <div class="page-header">
+    <h1>Packs</h1>
+    <a [routerLink]="['new']" class="btn btn-primary">
+      <lucide-icon name="plus" [size]="16" aria-hidden="true"></lucide-icon>
+      Nuevo pack
+    </a>
+  </div>
+
+  @if (store.loading()) {
+    <div class="spinner" role="status" aria-label="Cargando packs"></div>
+  } @else if (store.error()) {
+    <div class="alert-error" role="alert">{{ store.error() }}</div>
+  } @else if (store.packs().length === 0) {
+    <div class="empty-state card">
+      <lucide-icon name="gift" [size]="40" aria-hidden="true"></lucide-icon>
+      <p>No hay packs para este restaurante</p>
+    </div>
+  } @else {
+    <div class="card table-container">
+      <table>
+        <caption class="sr-only">Packs del restaurante</caption>
+        <thead>
+          <tr>
+            <th scope="col">Pack</th>
+            <th scope="col">Composición</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Estado</th>
+            <th scope="col"><span class="sr-only">Acciones</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of store.packs(); track p.id) {
+            <tr>
+              <td>
+                <div class="pack-info">
+                  <span class="pack-name">{{ p.name }}</span>
+                  @if (p.description) {
+                    <span class="pack-desc">{{ p.description }}</span>
+                  }
+                </div>
+              </td>
+              <td>
+                {{ composition(p) }}
+                @if (blockedCount(p) > 0) {
+                  <span class="blocked">({{ blockedCount(p) }} {{ blockedCount(p) === 1 ? 'plato bloqueado' : 'platos bloqueados' }})</span>
+                }
+              </td>
+              <td class="price">{{ p.price | number:'1.2-2' }} €</td>
+              <td>
+                <span class="status" [class.status-active]="p.available" [class.status-inactive]="!p.available">
+                  {{ p.available ? 'Disponible' : 'No disponible' }}
+                </span>
+              </td>
+              <td>
+                <div class="actions">
+                  <a [routerLink]="[p.id, 'edit']" class="btn btn-secondary btn-sm" [attr.aria-label]="'Editar el pack ' + p.name">
+                    <lucide-icon name="edit" [size]="14" aria-hidden="true"></lucide-icon>
+                  </a>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="onDelete(p)" [attr.aria-label]="'Eliminar el pack ' + p.name">
+                    <lucide-icon name="trash-2" [size]="14" aria-hidden="true"></lucide-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

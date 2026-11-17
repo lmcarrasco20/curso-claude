@@ -49,6 +49,10 @@ export const routes: Routes = [
             loadChildren: () => import('./features/points-rewards/points-rewards.routes').then(m => m.POINTS_REWARD_ROUTES)
           },
           {
+            path: 'packs',
+            loadChildren: () => import('./features/packs/packs.routes').then(m => m.PACK_ROUTES)
+          },
+          {
             path: 'employees',
             loadChildren: () => import('./features/employees/employees.routes').then(m => m.EMPLOYEE_ROUTES)
           }

@@ -48,6 +48,10 @@
                 <lucide-icon name="star" [size]="14"></lucide-icon>
                 <span>Puntos</span>
               </a>
+              <a [routerLink]="['/restaurants', r.id, 'packs']" routerLinkActive="active" class="sub-nav-item">
+                <lucide-icon name="gift" [size]="14"></lucide-icon>
+                <span>Packs</span>
+              </a>
               <a [routerLink]="['/restaurants', r.id, 'employees']" routerLinkActive="active" class="sub-nav-item">
                 <lucide-icon name="users" [size]="14"></lucide-icon>
                 <span>Empleados</span>
