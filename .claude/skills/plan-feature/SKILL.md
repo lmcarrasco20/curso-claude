@@ -29,6 +29,7 @@ Genera un plan de implementación en markdown siguiendo la plantilla [assets/pla
    - **Dudas abiertas**: preguntas para que el usuario las conteste.
    - **Decisiones tomadas**: decisiones que has tomado por tu cuenta, con su motivo, para que el usuario pueda corregirlas.
 5. Al terminar, indica al usuario la ruta del plan y resume las dudas abiertas y las decisiones tomadas. No implementes nada.
+6. Avisa por Slack: publica un mensaje en el canal `curso-claude` (ID `C0CHB9C0CGK`) con la herramienta `mcp__slack__slack_post_message` (si es diferido, cárgala antes con `ToolSearch`). El mensaje, en español y breve, indica que el plan está listo, su ruta, el número de issue y cuántas dudas abiertas y decisiones tomadas tiene. Si no se encuentra el canal por ese ID, búscalo por nombre con `mcp__slack__slack_list_channels`. Si el envío falla, díselo al usuario; no reintentes en bucle.
 
 ## Reglas para las tareas
 

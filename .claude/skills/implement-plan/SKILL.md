@@ -58,3 +58,7 @@ Cuando todas las tareas estén hechas:
 ## Al terminar
 
 Resume al usuario: la rama creada, las tareas completadas (con sus commits), el estado de los criterios de aceptación y cualquier desviación o criterio pendiente.
+
+## Aviso por Slack
+
+Después del resumen, publica un mensaje en el canal `curso-claude` (ID `C0CHB9C0CGK`) con la herramienta `mcp__slack__slack_post_message` (si es diferido, cárgala antes con `ToolSearch`). El mensaje, en español y breve, indica el plan implementado (ruta), la rama, cuántas tareas se completaron, el estado de los criterios de aceptación y los criterios pendientes o desviaciones, si los hay. Si no se encuentra el canal por ese ID, búscalo por nombre con `mcp__slack__slack_list_channels`. Si el envío falla, díselo al usuario; no reintentes en bucle. Si el trabajo se detuvo antes de terminar (consulta al usuario, plan incorrecto), no envíes el aviso de finalización.
