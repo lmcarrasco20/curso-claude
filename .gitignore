@@ -1,2 +1,5 @@
 .DS_Store
 /node_modules
+# Artefactos de build y de grabación
+dist/
+videos/
